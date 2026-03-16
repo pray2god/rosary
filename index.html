@@ -37,22 +37,7 @@
       </section>
 
 
-      <button id="testVibrate">Test vibration</button>
-<script>
-  document.getElementById("testVibrate").addEventListener("click", () => {
-    const supported = "vibrate" in navigator;
-    console.log("supports vibrate:", supported);
-
-    if (!supported) {
-      alert("Vibration API not supported");
-      return;
-    }
-
-    const result = navigator.vibrate(200);
-    console.log("vibrate result:", result);
-    alert("vibrate() returned: " + result);
-  });
-</script>
+      
 
       <section class="rosary-stage">
         <svg
