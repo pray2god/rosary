@@ -10,6 +10,7 @@ const progressLabelEl = document.getElementById("progressLabel");
 
 const appTitleEl = document.getElementById("appTitle");
 const heroLabelEl = document.getElementById("heroLabel");
+
 const swipeHintEl = document.getElementById("swipeHint");
 
 const prevBtn = document.getElementById("prevBtn");
