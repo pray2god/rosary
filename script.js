@@ -472,6 +472,9 @@ let currentUILang = loadUiLanguage();
 let currentPrayerLang = loadPrayerLanguage();
 let settings = loadSettings();
 
+settings.focusMode = false;
+saveSettings();
+
 let rosaryNodes = buildRosaryData();
 const rosaryGeometry = buildGeometry();
 let currentIndex = loadProgress();
