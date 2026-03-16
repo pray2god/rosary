@@ -1096,7 +1096,7 @@ function vibrateForBead(bead) {
   }
 
   if (bead.type === "large") {
-    navigator.vibrate(140);
+    navigator.vibrate(140, 70, 140);
     return;
   }
 
