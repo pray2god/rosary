@@ -1,10 +1,16 @@
 const STORAGE_KEY = "rosary-algorithmic-progress";
 const SETTINGS_KEY = "rosary-algorithmic-settings";
+const UI_LANG_KEY = "rosary-ui-language";
+const PRAYER_LANG_KEY = "rosary-prayer-language";
 
 const mysteryNameEl = document.getElementById("mysteryName");
 const prayerTitleEl = document.getElementById("prayerTitle");
 const sectionLabelEl = document.getElementById("sectionLabel");
 const progressLabelEl = document.getElementById("progressLabel");
+
+const appTitleEl = document.getElementById("appTitle");
+const heroLabelEl = document.getElementById("heroLabel");
+const swipeHintEl = document.getElementById("swipeHint");
 
 const prevBtn = document.getElementById("prevBtn");
 const nextBtn = document.getElementById("nextBtn");
@@ -19,8 +25,26 @@ const focusModeToggle = document.getElementById("focusModeToggle");
 const showTextToggle = document.getElementById("showTextToggle");
 const vibrationToggle = document.getElementById("vibrationToggle");
 
+const focusModeLabelEl = document.getElementById("focusModeLabel");
+const showTextLabelEl = document.getElementById("showTextLabel");
+const vibrationLabelEl = document.getElementById("vibrationLabel");
+
+const prayerViewTitleEl = document.getElementById("prayerViewTitle");
+const prayerDetailsTitleEl = document.getElementById("prayerDetailsTitle");
+const actionsTitleEl = document.getElementById("actionsTitle");
+
 const panelPrayerTitle = document.getElementById("panelPrayerTitle");
 const panelPrayerText = document.getElementById("panelPrayerText");
+
+const uiLangLabelEl = document.getElementById("uiLangLabel");
+const prayerLangLabelEl = document.getElementById("prayerLangLabel");
+
+const uiLangEnBtn = document.getElementById("uiLangEnBtn");
+const uiLangDeBtn = document.getElementById("uiLangDeBtn");
+
+const prayerLangEnBtn = document.getElementById("prayerLangEnBtn");
+const prayerLangDeBtn = document.getElementById("prayerLangDeBtn");
+const prayerLangLaBtn = document.getElementById("prayerLangLaBtn");
 
 const gestureArea = document.getElementById("gestureArea");
 const beadLayer = document.getElementById("beadLayer");
@@ -29,16 +53,438 @@ const cordLayer = document.getElementById("cordLayer");
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
-const rosaryNodes = buildRosaryData();
-const rosaryGeometry = buildGeometry();
+const UI_TEXT = {
+  en: {
+    appTitle: "Rosary",
+    mysteryOfDay: "Mystery of the day",
+    currentPrayer: "Current prayer",
+    opening: "Opening",
+    decade: "Decade",
+    stepOf: (current, total) => `Step ${current} of ${total}`,
+    prayerView: "Prayer View",
+    focusMode: "Focus mode",
+    showPrayerText: "Show prayer text",
+    vibration: "Vibration",
+    prayerDetails: "Prayer Details",
+    actions: "Actions",
+    resumePrayer: "Resume Prayer",
+    resetProgress: "Reset Progress",
+    previous: "Previous",
+    next: "Next",
+    swipeHint: "Swipe left/right to move • Tap or hold a bead for details",
+    mysteryOfThisBead: "Mystery of this bead",
+    addAfterJesus: 'Add after "Jesus"',
+    ui: "UI",
+    prayer: "Prayer"
+  },
+  de: {
+    appTitle: "Rosenkranz",
+    mysteryOfDay: "Tagesmysterium",
+    currentPrayer: "Aktuelles Gebet",
+    opening: "Einleitung",
+    decade: "Gesätz",
+    stepOf: (current, total) => `Schritt ${current} von ${total}`,
+    prayerView: "Gebetsansicht",
+    focusMode: "Fokusmodus",
+    showPrayerText: "Gebetstext anzeigen",
+    vibration: "Vibration",
+    prayerDetails: "Gebetsdetails",
+    actions: "Aktionen",
+    resumePrayer: "Zum Gebet zurück",
+    resetProgress: "Fortschritt zurücksetzen",
+    previous: "Zurück",
+    next: "Weiter",
+    swipeHint: "Links/rechts wischen • Perle tippen oder halten für Details",
+    mysteryOfThisBead: "Geheimnis dieser Perle",
+    addAfterJesus: 'Nach „Jesus“ einfügen',
+    ui: "UI",
+    prayer: "Gebet"
+  }
+};
 
-let currentIndex = loadProgress();
+const LITURGY = {
+  en: {
+    prayerTitles: {
+      signOfCross: "Sign of the Cross",
+      apostlesCreed: "Apostles’ Creed",
+      hailMary: "Hail Mary",
+      ourFather: "Our Father"
+    },
+    prayers: {
+      signOfCross:
+        "In the name of the Father, and of the Son, and of the Holy Spirit. Amen.",
+      apostlesCreed:
+        "I believe in God, the Father almighty, Creator of heaven and earth, and in Jesus Christ, His only Son, our Lord...",
+      hailMary:
+        "Hail Mary, full of grace, the Lord is with thee. Blessed art thou among women, and blessed is the fruit of thy womb, Jesus. Holy Mary, Mother of God, pray for us sinners, now and at the hour of our death. Amen.",
+      ourFather:
+        "Our Father, who art in heaven, hallowed be thy name; thy kingdom come; thy will be done on earth as it is in heaven. Give us this day our daily bread, and forgive us our trespasses, as we forgive those who trespass against us. And lead us not into temptation, but deliver us from evil. Amen."
+    },
+    meditations: {
+      beginSlowly: "Begin slowly. Settle your attention.",
+      enterPrayer: "Enter prayer with intention.",
+      openingHailMary: (i) => `Opening Hail Mary ${i} of 3.`,
+      pauseBeforeDecades: "Pause before entering the decades.",
+      hailMaryOf10: (mysteryTitle, i) => `${mysteryTitle} • Hail Mary ${i} of 10`,
+      mysteryNumber: (decade, mysteryTitle) => `Mystery ${decade}: ${mysteryTitle}`
+    },
+    mysteries: {
+      joyfulSetName: "Joyful Mysteries",
+      sorrowfulSetName: "Sorrowful Mysteries",
+      gloriousSetName: "Glorious Mysteries",
+      luminousSetName: "Luminous Mysteries",
+      joyful: [
+        {
+          title: "The Annunciation",
+          insert: "Jesus, whom thou, O Virgin, didst conceive by the Holy Spirit."
+        },
+        {
+          title: "The Visitation",
+          insert: "Jesus, whom thou, O Virgin, didst carry to Elizabeth."
+        },
+        {
+          title: "The Nativity",
+          insert: "Jesus, whom thou, O Virgin, didst bring forth."
+        },
+        {
+          title: "The Presentation in the Temple",
+          insert: "Jesus, whom thou, O Virgin, didst present in the Temple."
+        },
+        {
+          title: "The Finding in the Temple",
+          insert: "Jesus, whom thou, O Virgin, didst find in the Temple."
+        }
+      ],
+      sorrowful: [
+        {
+          title: "The Agony in the Garden",
+          insert: "Jesus, who for us did sweat blood in the garden."
+        },
+        {
+          title: "The Scourging at the Pillar",
+          insert: "Jesus, who for us was scourged at the pillar."
+        },
+        {
+          title: "The Crowning with Thorns",
+          insert: "Jesus, who for us was crowned with thorns."
+        },
+        {
+          title: "The Carrying of the Cross",
+          insert: "Jesus, who for us carried the heavy cross."
+        },
+        {
+          title: "The Crucifixion",
+          insert: "Jesus, who for us was crucified."
+        }
+      ],
+      glorious: [
+        {
+          title: "The Resurrection",
+          insert: "Jesus, who rose glorious from the dead."
+        },
+        {
+          title: "The Ascension",
+          insert: "Jesus, who ascended into heaven."
+        },
+        {
+          title: "The Descent of the Holy Spirit",
+          insert: "Jesus, who sent us the Holy Spirit."
+        },
+        {
+          title: "The Assumption",
+          insert: "Jesus, who took thee up into heaven."
+        },
+        {
+          title: "The Coronation of Mary",
+          insert: "Jesus, who crowned thee Queen of heaven and earth."
+        }
+      ],
+      luminous: [
+        {
+          title: "The Baptism of Jesus",
+          insert: "Jesus, who was baptized in the Jordan."
+        },
+        {
+          title: "The Wedding at Cana",
+          insert: "Jesus, who revealed His glory at Cana."
+        },
+        {
+          title: "The Proclamation of the Kingdom",
+          insert: "Jesus, who proclaimed the Kingdom of God."
+        },
+        {
+          title: "The Transfiguration",
+          insert: "Jesus, who was transfigured on the mountain."
+        },
+        {
+          title: "The Institution of the Eucharist",
+          insert: "Jesus, who gave us His Body and Blood in the Eucharist."
+        }
+      ]
+    }
+  },
+
+  de: {
+    prayerTitles: {
+      signOfCross: "Kreuzzeichen",
+      apostlesCreed: "Apostolisches Glaubensbekenntnis",
+      hailMary: "Gegrüßet seist du, Maria",
+      ourFather: "Vaterunser"
+    },
+    prayers: {
+      signOfCross:
+        "Im Namen des Vaters und des Sohnes und des Heiligen Geistes. Amen.",
+      apostlesCreed:
+        "Ich glaube an Gott, den Vater, den Allmächtigen, den Schöpfer des Himmels und der Erde...",
+      hailMary:
+        "Gegrüßet seist du, Maria, voll der Gnade, der Herr ist mit dir. Du bist gebenedeit unter den Frauen und gebenedeit ist die Frucht deines Leibes, Jesus. Heilige Maria, Mutter Gottes, bitte für uns Sünder jetzt und in der Stunde unseres Todes. Amen.",
+      ourFather:
+        "Vater unser im Himmel, geheiligt werde dein Name. Dein Reich komme. Dein Wille geschehe, wie im Himmel so auf Erden. Unser tägliches Brot gib uns heute und vergib uns unsere Schuld, wie auch wir vergeben unseren Schuldigern. Und führe uns nicht in Versuchung, sondern erlöse uns von dem Bösen. Amen."
+    },
+    meditations: {
+      beginSlowly: "Beginne langsam. Sammle deine Aufmerksamkeit.",
+      enterPrayer: "Tritt mit innerer Sammlung ins Gebet ein.",
+      openingHailMary: (i) => `Einleitendes Gegrüßet seist du, Maria ${i} von 3.`,
+      pauseBeforeDecades: "Halte kurz inne, bevor die Gesätze beginnen.",
+      hailMaryOf10: (mysteryTitle, i) => `${mysteryTitle} • Ave Maria ${i} von 10`,
+      mysteryNumber: (decade, mysteryTitle) => `${decade}. Geheimnis: ${mysteryTitle}`
+    },
+    mysteries: {
+      joyfulSetName: "Freudenreicher Rosenkranz",
+      sorrowfulSetName: "Schmerzhafter Rosenkranz",
+      gloriousSetName: "Glorreicher Rosenkranz",
+      luminousSetName: "Lichtreicher Rosenkranz",
+      joyful: [
+        {
+          title: "Die Verkündigung des Herrn",
+          insert: "Jesus, den du, o Jungfrau, vom Heiligen Geist empfangen hast."
+        },
+        {
+          title: "Die Heimsuchung Mariens",
+          insert: "Jesus, den du, o Jungfrau, zu Elisabet getragen hast."
+        },
+        {
+          title: "Die Geburt Jesu",
+          insert: "Jesus, den du, o Jungfrau, geboren hast."
+        },
+        {
+          title: "Die Darstellung Jesu im Tempel",
+          insert: "Jesus, den du, o Jungfrau, im Tempel aufgeopfert hast."
+        },
+        {
+          title: "Die Wiederfindung Jesu im Tempel",
+          insert: "Jesus, den du, o Jungfrau, im Tempel wiedergefunden hast."
+        }
+      ],
+      sorrowful: [
+        {
+          title: "Jesus, der für uns Blut geschwitzt hat",
+          insert: "der für uns Blut geschwitzt hat."
+        },
+        {
+          title: "Jesus, der für uns gegeißelt worden ist",
+          insert: "der für uns gegeißelt worden ist."
+        },
+        {
+          title: "Jesus, der für uns mit Dornen gekrönt worden ist",
+          insert: "der für uns mit Dornen gekrönt worden ist."
+        },
+        {
+          title: "Jesus, der für uns das schwere Kreuz getragen hat",
+          insert: "der für uns das schwere Kreuz getragen hat."
+        },
+        {
+          title: "Jesus, der für uns gekreuzigt worden ist",
+          insert: "der für uns gekreuzigt worden ist."
+        }
+      ],
+      glorious: [
+        {
+          title: "Jesus, der von den Toten auferstanden ist",
+          insert: "der von den Toten auferstanden ist."
+        },
+        {
+          title: "Jesus, der in den Himmel aufgefahren ist",
+          insert: "der in den Himmel aufgefahren ist."
+        },
+        {
+          title: "Jesus, der uns den Heiligen Geist gesandt hat",
+          insert: "der uns den Heiligen Geist gesandt hat."
+        },
+        {
+          title: "Jesus, der dich, o Jungfrau, in den Himmel aufgenommen hat",
+          insert: "der dich, o Jungfrau, in den Himmel aufgenommen hat."
+        },
+        {
+          title: "Jesus, der dich, o Jungfrau, im Himmel gekrönt hat",
+          insert: "der dich, o Jungfrau, im Himmel gekrönt hat."
+        }
+      ],
+      luminous: [
+        {
+          title: "Jesus, der von Johannes getauft worden ist",
+          insert: "der von Johannes getauft worden ist."
+        },
+        {
+          title: "Jesus, der sich bei der Hochzeit in Kana offenbart hat",
+          insert: "der sich bei der Hochzeit in Kana offenbart hat."
+        },
+        {
+          title: "Jesus, der uns das Reich Gottes verkündet hat",
+          insert: "der uns das Reich Gottes verkündet hat."
+        },
+        {
+          title: "Jesus, der auf dem Berg verklärt worden ist",
+          insert: "der auf dem Berg verklärt worden ist."
+        },
+        {
+          title: "Jesus, der uns die Eucharistie geschenkt hat",
+          insert: "der uns die Eucharistie geschenkt hat."
+        }
+      ]
+    }
+  },
+
+  la: {
+    prayerTitles: {
+      signOfCross: "Signum Crucis",
+      apostlesCreed: "Symbolum Apostolorum",
+      hailMary: "Ave Maria",
+      ourFather: "Pater Noster"
+    },
+    prayers: {
+      signOfCross:
+        "In nomine Patris, et Filii, et Spiritus Sancti. Amen.",
+      apostlesCreed:
+        "Credo in Deum Patrem omnipotentem, Creatorem caeli et terrae...",
+      hailMary:
+        "Ave Maria, gratia plena, Dominus tecum. Benedicta tu in mulieribus, et benedictus fructus ventris tui, Iesus. Sancta Maria, Mater Dei, ora pro nobis peccatoribus nunc et in hora mortis nostrae. Amen.",
+      ourFather:
+        "Pater noster, qui es in caelis, sanctificetur nomen tuum. Adveniat regnum tuum. Fiat voluntas tua sicut in caelo et in terra. Panem nostrum quotidianum da nobis hodie et dimitte nobis debita nostra sicut et nos dimittimus debitoribus nostris. Et ne nos inducas in tentationem sed libera nos a malo. Amen."
+    },
+    meditations: {
+      beginSlowly: "Incipe lente. Animum compone.",
+      enterPrayer: "Intentione in orationem ingredere.",
+      openingHailMary: (i) => `Ave Maria initii ${i} ex 3.`,
+      pauseBeforeDecades: "Siste paulisper ante decadas.",
+      hailMaryOf10: (mysteryTitle, i) => `${mysteryTitle} • Ave Maria ${i} ex 10`,
+      mysteryNumber: (decade, mysteryTitle) => `Mysterium ${decade}: ${mysteryTitle}`
+    },
+    mysteries: {
+      joyfulSetName: "Mysteria Gaudiosa",
+      sorrowfulSetName: "Mysteria Dolorosa",
+      gloriousSetName: "Mysteria Gloriosa",
+      luminousSetName: "Mysteria Luminosa",
+      joyful: [
+        {
+          title: "Annuntiatio",
+          insert: "Iesus, quem Virgo per Spiritum Sanctum concepisti."
+        },
+        {
+          title: "Visitatio",
+          insert: "Iesus, quem Virgo Elisabeth portasti."
+        },
+        {
+          title: "Nativitas",
+          insert: "Iesus, quem Virgo genuisti."
+        },
+        {
+          title: "Praesentatio in Templo",
+          insert: "Iesus, quem Virgo in templo praesentasti."
+        },
+        {
+          title: "Inventio in Templo",
+          insert: "Iesus, quem Virgo in templo invenisti."
+        }
+      ],
+      sorrowful: [
+        {
+          title: "Agonia in horto",
+          insert: "Iesus, qui pro nobis sanguinem sudavit."
+        },
+        {
+          title: "Flagellatio",
+          insert: "Iesus, qui pro nobis flagellatus est."
+        },
+        {
+          title: "Coronatio spinea",
+          insert: "Iesus, qui pro nobis spinis coronatus est."
+        },
+        {
+          title: "Baiulatio crucis",
+          insert: "Iesus, qui pro nobis crucem baiulavit."
+        },
+        {
+          title: "Crucifixio",
+          insert: "Iesus, qui pro nobis crucifixus est."
+        }
+      ],
+      glorious: [
+        {
+          title: "Resurrectio",
+          insert: "Iesus, qui a mortuis resurrexit."
+        },
+        {
+          title: "Ascensio",
+          insert: "Iesus, qui in caelum ascendit."
+        },
+        {
+          title: "Descensus Spiritus Sancti",
+          insert: "Iesus, qui nobis Spiritum Sanctum misit."
+        },
+        {
+          title: "Assumptio",
+          insert: "Iesus, qui te, Virgo, in caelum assumpsit."
+        },
+        {
+          title: "Coronatio Mariae",
+          insert: "Iesus, qui te, Virgo, in caelo coronavit."
+        }
+      ],
+      luminous: [
+        {
+          title: "Baptisma in Iordane",
+          insert: "Iesus, qui in Iordane baptizatus est."
+        },
+        {
+          title: "Nuptiae Canae",
+          insert: "Iesus, qui apud Canense matrimonium se manifestavit."
+        },
+        {
+          title: "Proclamatio Regni Dei",
+          insert: "Iesus, qui Regnum Dei annuntiavit."
+        },
+        {
+          title: "Transfiguratio",
+          insert: "Iesus, qui in monte transfiguratus est."
+        },
+        {
+          title: "Institutio Eucharistiae",
+          insert: "Iesus, qui nobis Eucharistiam dedit."
+        }
+      ]
+    }
+  }
+};
+
+let cancelActiveLongPress = null;
+let currentUILang = loadUiLanguage();
+let currentPrayerLang = loadPrayerLanguage();
 let settings = loadSettings();
 
+let rosaryNodes = buildRosaryData();
+const rosaryGeometry = buildGeometry();
+let currentIndex = loadProgress();
+
+if (currentIndex >= rosaryNodes.length) {
+  currentIndex = 0;
+}
+
 applySettings();
-renderMysteryName();
+applyUIText();
 renderCurrent();
 renderRosary();
+updateLanguageButtons();
 
 prevBtn.addEventListener("click", () => moveTo(currentIndex - 1));
 nextBtn.addEventListener("click", () => moveTo(currentIndex + 1));
@@ -71,86 +517,168 @@ vibrationToggle.addEventListener("change", () => {
   saveSettings();
 });
 
+uiLangEnBtn.addEventListener("click", () => setUiLanguage("en"));
+uiLangDeBtn.addEventListener("click", () => setUiLanguage("de"));
+
+prayerLangEnBtn.addEventListener("click", () => setPrayerLanguage("en"));
+prayerLangDeBtn.addEventListener("click", () => setPrayerLanguage("de"));
+prayerLangLaBtn.addEventListener("click", () => setPrayerLanguage("la"));
+
 setupSwipeNavigation();
+
+function ui() {
+  return UI_TEXT[currentUILang] || UI_TEXT.en;
+}
+
+function liturgy() {
+  return LITURGY[currentPrayerLang] || LITURGY.en;
+}
+
+function setUiLanguage(lang) {
+  currentUILang = lang;
+  localStorage.setItem(UI_LANG_KEY, lang);
+  applyUIText();
+  renderCurrent();
+  updateLanguageButtons();
+}
+
+function setPrayerLanguage(lang) {
+  currentPrayerLang = lang;
+  localStorage.setItem(PRAYER_LANG_KEY, lang);
+
+  rosaryNodes = buildRosaryData();
+
+  if (currentIndex >= rosaryNodes.length) {
+    currentIndex = 0;
+  }
+
+  renderCurrent();
+  renderRosary();
+  updateLanguageButtons();
+}
+
+function updateLanguageButtons() {
+  uiLangEnBtn.classList.toggle("active", currentUILang === "en");
+  uiLangDeBtn.classList.toggle("active", currentUILang === "de");
+
+  prayerLangEnBtn.classList.toggle("active", currentPrayerLang === "en");
+  prayerLangDeBtn.classList.toggle("active", currentPrayerLang === "de");
+  prayerLangLaBtn.classList.toggle("active", currentPrayerLang === "la");
+}
+
+function applyUIText() {
+  const t = ui();
+
+  document.documentElement.lang = currentUILang;
+  document.title = t.appTitle;
+
+  appTitleEl.textContent = t.appTitle;
+  heroLabelEl.textContent = t.currentPrayer;
+  prayerViewTitleEl.textContent = t.prayerView;
+  prayerDetailsTitleEl.textContent = t.prayerDetails;
+  actionsTitleEl.textContent = t.actions;
+
+  focusModeLabelEl.textContent = t.focusMode;
+  showTextLabelEl.textContent = t.showPrayerText;
+  vibrationLabelEl.textContent = t.vibration;
+
+  prevBtn.textContent = t.previous;
+  nextBtn.textContent = t.next;
+  resumeBtn.textContent = t.resumePrayer;
+  resetBtn.textContent = t.resetProgress;
+  swipeHintEl.textContent = t.swipeHint;
+
+  uiLangLabelEl.textContent = t.ui;
+  prayerLangLabelEl.textContent = t.prayer;
+  infoToggleBtn.setAttribute("aria-label", t.prayerDetails);
+
+  renderMysteryName();
+  updatePanelForCurrentBead();
+}
 
 function buildRosaryData() {
   const beads = [];
+  const lit = liturgy();
   const mysterySet = getMysterySetForToday();
 
-  // 0 cross
   beads.push({
     type: "cross",
-    section: "Opening",
-    prayerTitle: "Sign of the Cross",
-    prayerText: "In the name of the Father, and of the Son, and of the Holy Spirit. Amen.",
-    mysteryText: "Begin slowly. Settle your attention."
+    sectionKey: "opening",
+    prayerTitle: lit.prayerTitles.signOfCross,
+    prayerText: lit.prayers.signOfCross,
+    mysteryTitle: "",
+    mysteryInsert: "",
+    mysteryText: lit.meditations.beginSlowly
   });
 
-  // Hanging section: large -> 3 small -> large
   beads.push({
     type: "large",
-    section: "Opening",
-    prayerTitle: "Apostles’ Creed",
-    prayerText:
-      "I believe in God, the Father almighty, Creator of heaven and earth, and in Jesus Christ, His only Son, our Lord...",
-    mysteryText: "Enter prayer with intention."
+    sectionKey: "opening",
+    prayerTitle: lit.prayerTitles.apostlesCreed,
+    prayerText: lit.prayers.apostlesCreed,
+    mysteryTitle: "",
+    mysteryInsert: "",
+    mysteryText: lit.meditations.enterPrayer
   });
 
   for (let i = 1; i <= 3; i++) {
     beads.push({
       type: "small",
-      section: "Opening",
-      prayerTitle: "Hail Mary",
-      prayerText:
-        "Hail Mary, full of grace, the Lord is with thee. Blessed art thou among women, and blessed is the fruit of thy womb, Jesus. Holy Mary, Mother of God, pray for us sinners, now and at the hour of our death. Amen.",
-      mysteryText: `Opening Hail Mary ${i} of 3.`
+      sectionKey: "opening",
+      prayerTitle: lit.prayerTitles.hailMary,
+      prayerText: lit.prayers.hailMary,
+      mysteryTitle: "",
+      mysteryInsert: "",
+      mysteryText: lit.meditations.openingHailMary(i)
     });
   }
 
   beads.push({
     type: "large",
-    section: "Opening",
-    prayerTitle: "Our Father",
-    prayerText:
-      "Our Father, who art in heaven, hallowed be thy name; thy kingdom come; thy will be done on earth as it is in heaven. Give us this day our daily bread, and forgive us our trespasses, as we forgive those who trespass against us. And lead us not into temptation, but deliver us from evil. Amen.",
-    mysteryText: "Pause before entering the decades."
+    sectionKey: "opening",
+    prayerTitle: lit.prayerTitles.ourFather,
+    prayerText: lit.prayers.ourFather,
+    mysteryTitle: "",
+    mysteryInsert: "",
+    mysteryText: lit.meditations.pauseBeforeDecades
   });
 
-  // Main loop: exactly 5 decades of 10 small, separated by 5 large
-// Main loop: 5 groups of 10 small beads, but only 4 large beads in the loop,
-// because the top hanging large bead already serves as the 5th separator.
-for (let decade = 1; decade <= 5; decade++) {
-  for (let i = 1; i <= 10; i++) {
-    beads.push({
-      type: "small",
-      section: `Decade ${decade}`,
-      prayerTitle: "Hail Mary",
-      prayerText:
-        "Hail Mary, full of grace, the Lord is with thee. Blessed art thou among women, and blessed is the fruit of thy womb, Jesus. Holy Mary, Mother of God, pray for us sinners, now and at the hour of our death. Amen.",
-      mysteryText: `${mysterySet[decade - 1]} • Hail Mary ${i} of 10`
-    });
+  for (let decade = 1; decade <= 5; decade++) {
+    const mystery = mysterySet[decade - 1];
+
+    for (let i = 1; i <= 10; i++) {
+      beads.push({
+        type: "small",
+        sectionKey: "decade",
+        decadeNumber: decade,
+        prayerTitle: lit.prayerTitles.hailMary,
+        prayerText: lit.prayers.hailMary,
+        mysteryTitle: mystery.title,
+        mysteryInsert: mystery.insert,
+        mysteryText: lit.meditations.hailMaryOf10(mystery.title, i)
+      });
+    }
+
+    if (decade < 5) {
+      beads.push({
+        type: "large",
+        sectionKey: "decade",
+        decadeNumber: decade,
+        prayerTitle: lit.prayerTitles.ourFather,
+        prayerText: lit.prayers.ourFather,
+        mysteryTitle: mystery.title,
+        mysteryInsert: mystery.insert,
+        mysteryText: lit.meditations.mysteryNumber(decade, mystery.title)
+      });
+    }
   }
 
-  // Only add a large separator after decades 1–4.
-  if (decade < 5) {
-    beads.push({
-      type: "large",
-      section: `Decade ${decade}`,
-      prayerTitle: "Our Father",
-      prayerText:
-        "Our Father, who art in heaven, hallowed be thy name; thy kingdom come; thy will be done on earth as it is in heaven. Give us this day our daily bread, and forgive us our trespasses, as we forgive those who trespass against us. And lead us not into temptation, but deliver us from evil. Amen.",
-      mysteryText: `Mystery ${decade}: ${mysterySet[decade - 1]}`
-    });
-  }
-}
   return beads;
 }
 
 function buildGeometry() {
   const nodes = [];
 
-  // SVG viewBox is 400 x 760
-  // Hanging section coordinates
   nodes.push({ x: 200, y: 664, kind: "cross" }); // 0
   nodes.push({ x: 200, y: 600, kind: "large" }); // 1
   nodes.push({ x: 200, y: 560, kind: "small" }); // 2
@@ -158,107 +686,102 @@ function buildGeometry() {
   nodes.push({ x: 200, y: 480, kind: "small" }); // 4
   nodes.push({ x: 200, y: 440, kind: "large" }); // 5
 
-// Loop geometry
-// 54 loop positions: 50 small + 4 large
-const loopNodes = [];
-const cx = 200;
-const cy = 240;
-const rx = 120;
-const ry = 200;
+  const loopNodes = [];
+  const cx = 200;
+  const cy = 240;
+  const rx = 120;
+  const ry = 200;
 
-const startDeg = 120;
-const endDeg = 420;
+  const startDeg = 120;
+  const endDeg = 420;
 
-for (let i = 0; i < 54; i++) {
-  const t = i / 53;
-  const deg = startDeg + (endDeg - startDeg) * t;
-  const rad = (deg * Math.PI) / 180;
+  for (let i = 0; i < 54; i++) {
+    const t = i / 53;
+    const deg = startDeg + (endDeg - startDeg) * t;
+    const rad = (deg * Math.PI) / 180;
 
-  let x = cx + rx * Math.cos(rad);
-  let y = cy + ry * Math.sin(rad);
+    let x = cx + rx * Math.cos(rad);
+    let y = cy + ry * Math.sin(rad);
 
-  if (deg < 155 || deg > 385) {
-    x = cx + (x - cx) * 1;
-    y += 0;
+    if (deg < 155 || deg > 385) {
+      x = cx + (x - cx) * 1;
+      y += 0;
+    }
+
+    loopNodes.push({ x, y });
   }
 
-  loopNodes.push({ x, y });
-}
-
-return {
-  nodes: nodes.concat(loopNodes),
-  loopStartIndex: 6,
-  loopEndIndex: 59
-};
+  return {
+    nodes: nodes.concat(loopNodes),
+    loopStartIndex: 6,
+    loopEndIndex: 59
+  };
 }
 
 function getMysterySetForToday() {
   const day = new Date().getDay();
+  const mysteries = liturgy().mysteries;
 
-  const joyful = [
-    "The Annunciation",
-    "The Visitation",
-    "The Nativity",
-    "The Presentation in the Temple",
-    "The Finding in the Temple"
-  ];
-
-  const sorrowful = [
-    "The Agony in the Garden",
-    "The Scourging at the Pillar",
-    "The Crowning with Thorns",
-    "The Carrying of the Cross",
-    "The Crucifixion"
-  ];
-
-  const glorious = [
-    "The Resurrection",
-    "The Ascension",
-    "The Descent of the Holy Spirit",
-    "The Assumption",
-    "The Coronation of Mary"
-  ];
-
-  const luminous = [
-    "The Baptism of Jesus",
-    "The Wedding at Cana",
-    "The Proclamation of the Kingdom",
-    "The Transfiguration",
-    "The Institution of the Eucharist"
-  ];
-
-  if (day === 1 || day === 6) return joyful;
-  if (day === 2 || day === 5) return sorrowful;
-  if (day === 4) return luminous;
-  return glorious;
+  if (day === 1 || day === 6) return mysteries.joyful;
+  if (day === 2 || day === 5) return mysteries.sorrowful;
+  if (day === 4) return mysteries.luminous;
+  return mysteries.glorious;
 }
 
 function getMysteryNameForToday() {
   const day = new Date().getDay();
-  if (day === 1 || day === 6) return "Joyful Mysteries";
-  if (day === 2 || day === 5) return "Sorrowful Mysteries";
-  if (day === 4) return "Luminous Mysteries";
-  return "Glorious Mysteries";
+  const mysteries = liturgy().mysteries;
+
+  if (day === 1 || day === 6) return mysteries.joyfulSetName;
+  if (day === 2 || day === 5) return mysteries.sorrowfulSetName;
+  if (day === 4) return mysteries.luminousSetName;
+  return mysteries.gloriousSetName;
+}
+
+function getSectionLabel(bead) {
+  const t = ui();
+
+  if (bead.sectionKey === "opening") {
+    return t.opening;
+  }
+
+  return `${t.decade} ${bead.decadeNumber}`;
 }
 
 function renderMysteryName() {
-  mysteryNameEl.textContent = `Mystery of the day: ${getMysteryNameForToday()}`;
+  mysteryNameEl.textContent = `${ui().mysteryOfDay}: ${getMysteryNameForToday()}`;
 }
 
 function renderCurrent() {
   const bead = rosaryNodes[currentIndex];
   prayerTitleEl.textContent = bead.prayerTitle;
-  sectionLabelEl.textContent = bead.section;
-  progressLabelEl.textContent = `Step ${currentIndex + 1} of ${rosaryNodes.length}`;
+  sectionLabelEl.textContent = getSectionLabel(bead);
+  progressLabelEl.textContent = ui().stepOf(currentIndex + 1, rosaryNodes.length);
+  renderMysteryName();
   updatePanelForCurrentBead();
 }
 
 function updatePanelForCurrentBead(index = currentIndex) {
   const bead = rosaryNodes[index];
+  const t = ui();
+
   panelPrayerTitle.textContent = bead.prayerTitle;
+
+  let details = bead.mysteryText;
+
+  if (bead.mysteryTitle && bead.mysteryInsert) {
+    details += `
+
+${t.mysteryOfThisBead}:
+${bead.mysteryTitle}
+
+${t.addAfterJesus}:
+${bead.mysteryInsert}`;
+  }
+
   panelPrayerText.textContent = settings.showText
-    ? `${bead.prayerText}\n\nMeditation: ${bead.mysteryText}`
-    : bead.mysteryText;
+    ? `${bead.prayerText}\n\n${details}`
+    : details;
 }
 
 function renderRosary() {
@@ -275,9 +798,6 @@ function drawCord() {
   const pts = rosaryGeometry.nodes;
   cordLayer.innerHTML = "";
 
-  // ---------------------------
-  // 1) Main loop cord
-  // ---------------------------
   const loopPoints = pts.slice(6).map((p) => `${p.x},${p.y}`).join(" ");
   const loopPolyline = makeSvg("polyline", {
     points: loopPoints,
@@ -285,9 +805,6 @@ function drawCord() {
   });
   cordLayer.appendChild(loopPolyline);
 
-  // ---------------------------
-  // 2) Curved connectors from top large bead to loop ends
-  // ---------------------------
   const topLarge = pts[5];
   const leftLoopStart = pts[6];
   const rightLoopEnd = pts[59];
@@ -311,31 +828,22 @@ function drawCord() {
   cordLayer.appendChild(leftCurve);
   cordLayer.appendChild(rightCurve);
 
-  // ---------------------------
-  // 3) One continuous middle cord
-  // ---------------------------
   const cross = pts[0];
 
-const hangingCord = makeSvg("line", {
-  x1: topLarge.x ,
-  y1: topLarge.y + beadRadiusForIndex(5),
-  x2: cross.x,
-  y2: cross.y
-});
+  const hangingCord = makeSvg("line", {
+    x1: topLarge.x,
+    y1: topLarge.y + beadRadiusForIndex(5),
+    x2: cross.x,
+    y2: cross.y
+  });
 
-hangingCord.setAttribute("stroke", "#5a4334");
-hangingCord.setAttribute("stroke-width", "3");
-hangingCord.setAttribute("stroke-linecap", "round");
-hangingCord.setAttribute("opacity", "0.95");
+  hangingCord.setAttribute("stroke", "#5a4334");
+  hangingCord.setAttribute("stroke-width", "3");
+  hangingCord.setAttribute("stroke-linecap", "round");
+  hangingCord.setAttribute("opacity", "0.95");
 
-cordLayer.appendChild(hangingCord);
+  cordLayer.appendChild(hangingCord);
 
-  // ---------------------------
-  // 4) Visible bead-to-bead vertical segments
-  //    These make the cord visibly pass through all 5 vertical beads
-  // ---------------------------
-
-  // top large -> small 3
   cordLayer.appendChild(
     makeSvg("line", {
       x1: pts[5].x,
@@ -346,7 +854,6 @@ cordLayer.appendChild(hangingCord);
     })
   );
 
-  // small 3 -> small 2
   cordLayer.appendChild(
     makeSvg("line", {
       x1: pts[4].x,
@@ -357,7 +864,6 @@ cordLayer.appendChild(hangingCord);
     })
   );
 
-  // small 2 -> small 1
   cordLayer.appendChild(
     makeSvg("line", {
       x1: pts[3].x,
@@ -368,7 +874,6 @@ cordLayer.appendChild(hangingCord);
     })
   );
 
-  // small 1 -> lower large
   cordLayer.appendChild(
     makeSvg("line", {
       x1: pts[2].x,
@@ -379,7 +884,6 @@ cordLayer.appendChild(hangingCord);
     })
   );
 
-  // lower large -> cross
   cordLayer.appendChild(
     makeSvg("line", {
       x1: pts[1].x,
@@ -447,7 +951,7 @@ function drawCross(node, isActive) {
 
   const horizontal = makeSvg("rect", {
     x: node.x - 28,
-    y: node.y-14,
+    y: node.y - 14,
     width: 56,
     height: 16,
     rx: 4,
@@ -488,28 +992,68 @@ function drawHitTargets() {
 function attachPointerHandlers(el, index) {
   let timer = null;
   let longPressed = false;
+  let startX = 0;
+  let startY = 0;
+  let trackingPointerId = null;
+  const MOVE_CANCEL_THRESHOLD = 12;
 
-  const start = () => {
-    longPressed = false;
+  const clearPressTimer = () => {
     clearTimeout(timer);
+    timer = null;
+
+    if (cancelActiveLongPress === cancel) {
+      cancelActiveLongPress = null;
+    }
+  };
+
+  const start = (e) => {
+    longPressed = false;
+    trackingPointerId = e.pointerId;
+    startX = e.clientX;
+    startY = e.clientY;
+
+    clearPressTimer();
+    cancelActiveLongPress = cancel;
+
     timer = setTimeout(() => {
       longPressed = true;
       moveTo(index, false);
       openPanel();
+      timer = null;
     }, 420);
   };
 
   const cancel = () => {
-    clearTimeout(timer);
+    clearPressTimer();
+    trackingPointerId = null;
+  };
+
+  const move = (e) => {
+    if (trackingPointerId !== e.pointerId || !timer) return;
+
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    const distance = Math.hypot(dx, dy);
+
+    if (distance > MOVE_CANCEL_THRESHOLD) {
+      cancel();
+    }
   };
 
   el.addEventListener("pointerdown", start);
-  el.addEventListener("pointerup", () => {
-    if (!longPressed) {
+  el.addEventListener("pointermove", move);
+
+  el.addEventListener("pointerup", (e) => {
+    if (trackingPointerId !== e.pointerId) return;
+
+    if (!longPressed && timer) {
       moveTo(index);
+      openPanel();
     }
+
     cancel();
   });
+
   el.addEventListener("pointerleave", cancel);
   el.addEventListener("pointercancel", cancel);
 }
@@ -541,20 +1085,21 @@ function moveTo(index, useVibration = true) {
 
 function vibrateForBead(bead) {
   if (!settings.vibration) return;
-  if (!("vibrate" in navigator)) return;
+  if (typeof navigator.vibrate !== "function") return;
+
+  navigator.vibrate(0);
 
   if (bead.type === "cross") {
-    navigator.vibrate([140, 70, 140]);
+    navigator.vibrate([180, 60, 180, 60, 180]);
     return;
   }
 
   if (bead.type === "large") {
-  navigator.vibrate([140, 70, 140]);
-    
+    navigator.vibrate(140);
     return;
   }
 
-  navigator.vibrate(30);
+  navigator.vibrate(40);
 }
 
 function openPanel() {
@@ -583,7 +1128,7 @@ function saveProgress() {
 function loadProgress() {
   const raw = localStorage.getItem(STORAGE_KEY);
   const value = Number(raw);
-  return Number.isInteger(value) && value >= 0 && value < rosaryNodes.length ? value : 0;
+  return Number.isInteger(value) && value >= 0 ? value : 0;
 }
 
 function saveSettings() {
@@ -606,6 +1151,16 @@ function loadSettings() {
   }
 }
 
+function loadUiLanguage() {
+  const value = localStorage.getItem(UI_LANG_KEY);
+  return value === "de" ? "de" : "en";
+}
+
+function loadPrayerLanguage() {
+  const value = localStorage.getItem(PRAYER_LANG_KEY);
+  return value === "de" || value === "la" ? value : "en";
+}
+
 function setupSwipeNavigation() {
   let startX = 0;
   let startY = 0;
@@ -619,6 +1174,24 @@ function setupSwipeNavigation() {
       startX = touch.clientX;
       startY = touch.clientY;
       isTouching = true;
+    },
+    { passive: true }
+  );
+
+  gestureArea.addEventListener(
+    "touchmove",
+    (e) => {
+      if (!isTouching || !e.touches.length) return;
+
+      const touch = e.touches[0];
+      const dx = touch.clientX - startX;
+      const dy = touch.clientY - startY;
+
+      if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+        if (cancelActiveLongPress) {
+          cancelActiveLongPress();
+        }
+      }
     },
     { passive: true }
   );
