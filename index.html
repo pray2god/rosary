@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+  />
+  <title>Rosary</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="focus-mode">
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand-wrap">
+        <div class="brand-mark"></div>
+        <div>
+          <h1>Rosary</h1>
+          <p id="mysteryName" class="mystery-line"></p>
+        </div>
+      </div>
+
+      <button id="infoToggleBtn" class="icon-btn" aria-label="Open prayer details">
+        ☰
+      </button>
+    </header>
+
+    <main id="gestureArea" class="main">
+      <section class="hero-card">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <p class="hero-label">Current prayer</p>
+          <h2 id="prayerTitle">Sign of the Cross</h2>
+          <p id="sectionLabel" class="section-label">Opening</p>
+          <p id="progressLabel" class="progress-label">Step 1 of 61</p>
+        </div>
+      </section>
+
+      <section class="rosary-stage">
+        <svg
+          id="rosarySvg"
+          class="rosary-svg"
+          viewBox="0 0 400 760"
+          preserveAspectRatio="xMidYMid meet"
+          aria-label="Interactive rosary"
+        >
+          <defs>
+            <radialGradient id="woodSmall" cx="32%" cy="28%" r="75%">
+              <stop offset="0%" stop-color="#9b6a45"></stop>
+              <stop offset="35%" stop-color="#6a4025"></stop>
+              <stop offset="72%" stop-color="#321b11"></stop>
+              <stop offset="100%" stop-color="#160d09"></stop>
+            </radialGradient>
+
+            <radialGradient id="woodLarge" cx="32%" cy="28%" r="75%">
+              <stop offset="0%" stop-color="#b1794e"></stop>
+              <stop offset="35%" stop-color="#7b4a2b"></stop>
+              <stop offset="72%" stop-color="#3a2114"></stop>
+              <stop offset="100%" stop-color="#1a0f0a"></stop>
+            </radialGradient>
+
+            <linearGradient id="woodCross" x1="0%" x2="100%" y1="0%" y2="100%">
+              <stop offset="0%" stop-color="#9e6b44"></stop>
+              <stop offset="45%" stop-color="#6e4328"></stop>
+              <stop offset="100%" stop-color="#2a170f"></stop>
+            </linearGradient>
+
+            <linearGradient id="rope" x1="0%" x2="100%" y1="0%" y2="100%">
+              <stop offset="0%" stop-color="#7a634f"></stop>
+              <stop offset="100%" stop-color="#3a2a20"></stop>
+            </linearGradient>
+
+            <filter id="softGlow" x="-100%" y="-100%" width="300%" height="300%">
+              <feGaussianBlur stdDeviation="7" result="blur"></feGaussianBlur>
+              <feMerge>
+                <feMergeNode in="blur"></feMergeNode>
+                <feMergeNode in="SourceGraphic"></feMergeNode>
+              </feMerge>
+            </filter>
+
+            <filter id="beadShadow" x="-100%" y="-100%" width="300%" height="300%">
+              <feDropShadow dx="0" dy="5" stdDeviation="6" flood-color="rgba(0,0,0,0.45)"></feDropShadow>
+            </filter>
+          </defs>
+
+          <g id="cordLayer"></g>
+          <g id="beadLayer"></g>
+          <g id="hitLayer"></g>
+        </svg>
+      </section>
+
+      <section class="bottom-controls">
+        <button id="prevBtn" class="nav-btn">Previous</button>
+        <button id="nextBtn" class="nav-btn primary">Next</button>
+      </section>
+
+      <div class="swipe-hint">
+        Swipe left/right to move • Hold a bead for details
+      </div>
+    </main>
+  </div>
+
+  <aside id="settingsPanel" class="settings-panel hidden" aria-hidden="true">
+    <div class="settings-backdrop" id="settingsBackdrop"></div>
+
+    <div class="settings-sheet">
+      <div class="sheet-handle"></div>
+
+      <div class="sheet-section">
+        <h3>Prayer View</h3>
+
+        <label class="toggle-row">
+          <span>Focus mode</span>
+          <input type="checkbox" id="focusModeToggle" checked />
+        </label>
+
+        <label class="toggle-row">
+          <span>Show prayer text</span>
+          <input type="checkbox" id="showTextToggle" />
+        </label>
+
+        <label class="toggle-row">
+          <span>Vibration</span>
+          <input type="checkbox" id="vibrationToggle" checked />
+        </label>
+      </div>
+
+      <div class="sheet-section">
+        <h3>Prayer Details</h3>
+        <h4 id="panelPrayerTitle">Sign of the Cross</h4>
+        <p id="panelPrayerText" class="panel-prayer-text"></p>
+      </div>
+
+      <div class="sheet-section">
+        <h3>Actions</h3>
+        <div class="action-grid">
+          <button id="resumeBtn" class="sheet-btn">Resume Prayer</button>
+          <button id="resetBtn" class="sheet-btn danger">Reset Progress</button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <script src="script.js"></script>
+</body>
+</html>
