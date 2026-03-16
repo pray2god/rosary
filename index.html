@@ -15,29 +15,43 @@
       <div class="brand-wrap">
         <div class="brand-mark"></div>
         <div>
-          <h1>Rosary</h1>
+          <h1 id="appTitle">Rosary</h1>
           <p id="mysteryName" class="mystery-line"></p>
         </div>
       </div>
 
-      <button id="infoToggleBtn" class="icon-btn" aria-label="Open prayer details">
-        ☰
-      </button>
+      <div class="topbar-actions">
+        <div class="lang-switchers">
+          <div class="lang-group">
+            <span id="uiLangLabel" class="lang-label">UI</span>
+            <button id="uiLangEnBtn" class="mini-btn" type="button">EN</button>
+            <button id="uiLangDeBtn" class="mini-btn" type="button">DE</button>
+          </div>
+
+          <div class="lang-group">
+            <span id="prayerLangLabel" class="lang-label">Prayer</span>
+            <button id="prayerLangEnBtn" class="mini-btn" type="button">EN</button>
+            <button id="prayerLangDeBtn" class="mini-btn" type="button">DE</button>
+            <button id="prayerLangLaBtn" class="mini-btn" type="button">LA</button>
+          </div>
+        </div>
+
+        <button id="infoToggleBtn" class="icon-btn" aria-label="Open prayer details">
+          ☰
+        </button>
+      </div>
     </header>
 
     <main id="gestureArea" class="main">
       <section class="hero-card">
         <div class="hero-overlay"></div>
         <div class="hero-content">
-          <p class="hero-label">Current prayer</p>
+          <p id="heroLabel" class="hero-label">Current prayer</p>
           <h2 id="prayerTitle">Sign of the Cross</h2>
           <p id="sectionLabel" class="section-label">Opening</p>
-          <p id="progressLabel" class="progress-label">Step 1 of 61</p>
+          <p id="progressLabel" class="progress-label">Step 1 of 60</p>
         </div>
       </section>
-
-
-      
 
       <section class="rosary-stage">
         <svg
@@ -97,8 +111,8 @@
         <button id="nextBtn" class="nav-btn primary">Next</button>
       </section>
 
-      <div class="swipe-hint">
-        Swipe left/right to move • Hold a bead for details
+      <div id="swipeHint" class="swipe-hint">
+        Swipe left/right to move • Tap or hold a bead for details
       </div>
     </main>
   </div>
@@ -106,38 +120,36 @@
   <aside id="settingsPanel" class="settings-panel hidden" aria-hidden="true">
     <div class="settings-backdrop" id="settingsBackdrop"></div>
 
-    
-
     <div class="settings-sheet">
       <div class="sheet-handle"></div>
 
       <div class="sheet-section">
-        <h3>Prayer View</h3>
+        <h3 id="prayerViewTitle">Prayer View</h3>
 
         <label class="toggle-row">
-          <span>Focus mode</span>
+          <span id="focusModeLabel">Focus mode</span>
           <input type="checkbox" id="focusModeToggle" checked />
         </label>
 
         <label class="toggle-row">
-          <span>Show prayer text</span>
+          <span id="showTextLabel">Show prayer text</span>
           <input type="checkbox" id="showTextToggle" />
         </label>
 
         <label class="toggle-row">
-          <span>Vibration</span>
+          <span id="vibrationLabel">Vibration</span>
           <input type="checkbox" id="vibrationToggle" checked />
         </label>
       </div>
 
       <div class="sheet-section">
-        <h3>Prayer Details</h3>
+        <h3 id="prayerDetailsTitle">Prayer Details</h3>
         <h4 id="panelPrayerTitle">Sign of the Cross</h4>
         <p id="panelPrayerText" class="panel-prayer-text"></p>
       </div>
 
       <div class="sheet-section">
-        <h3>Actions</h3>
+        <h3 id="actionsTitle">Actions</h3>
         <div class="action-grid">
           <button id="resumeBtn" class="sheet-btn">Resume Prayer</button>
           <button id="resetBtn" class="sheet-btn danger">Reset Progress</button>
