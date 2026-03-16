@@ -10,7 +10,6 @@ const progressLabelEl = document.getElementById("progressLabel");
 
 const appTitleEl = document.getElementById("appTitle");
 const heroLabelEl = document.getElementById("heroLabel");
-
 const swipeHintEl = document.getElementById("swipeHint");
 
 const prevBtn = document.getElementById("prevBtn");
@@ -1047,9 +1046,9 @@ function attachPointerHandlers(el, index) {
   el.addEventListener("pointerup", (e) => {
     if (trackingPointerId !== e.pointerId) return;
 
+    // normal tap: only move, no dialog
     if (!longPressed && timer) {
       moveTo(index);
-      openPanel();
     }
 
     cancel();
@@ -1096,7 +1095,7 @@ function vibrateForBead(bead) {
   }
 
   if (bead.type === "large") {
-    navigator.vibrate(140, 70, 140);
+    navigator.vibrate(140);
     return;
   }
 
