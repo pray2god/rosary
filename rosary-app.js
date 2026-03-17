@@ -11,10 +11,18 @@ const mysterySorrowfulBtn = document.getElementById("mysterySorrowfulBtn");
 const mysteryGloriousBtn = document.getElementById("mysteryGloriousBtn");
 const mysteryLuminousBtn = document.getElementById("mysteryLuminousBtn");
 
+const languageMenuBtn = document.getElementById("languageMenuBtn");
+const languageMenuEl = document.getElementById("languageMenu");
+const uiLanguageSelect = document.getElementById("uiLanguageSelect");
+const prayerLanguageSelect = document.getElementById("prayerLanguageSelect");
+
 const mysteryNameEl = document.getElementById("mysteryName");
 const prayerTitleEl = document.getElementById("prayerTitle");
 const sectionLabelEl = document.getElementById("sectionLabel");
 const progressLabelEl = document.getElementById("progressLabel");
+
+const panelPrevBtn = document.getElementById("panelPrevBtn");
+const panelNextBtn = document.getElementById("panelNextBtn");
 
 const appTitleEl = document.getElementById("appTitle");
 const heroLabelEl = document.getElementById("heroLabel");
@@ -46,13 +54,6 @@ const panelPrayerText = document.getElementById("panelPrayerText");
 
 const uiLangLabelEl = document.getElementById("uiLangLabel");
 const prayerLangLabelEl = document.getElementById("prayerLangLabel");
-
-const uiLangEnBtn = document.getElementById("uiLangEnBtn");
-const uiLangDeBtn = document.getElementById("uiLangDeBtn");
-
-const prayerLangEnBtn = document.getElementById("prayerLangEnBtn");
-const prayerLangDeBtn = document.getElementById("prayerLangDeBtn");
-const prayerLangLaBtn = document.getElementById("prayerLangLaBtn");
 
 const gestureArea = document.getElementById("gestureArea");
 const beadLayer = document.getElementById("beadLayer");
@@ -194,8 +195,9 @@ const UI_TEXT = {
     swipeHint: "Swipe left/right to move • Tap or hold a bead for details",
     mysteryOfThisBead: "Mystery of this bead",
     addAfterJesus: 'Add after "Jesus"',
-    ui: "UI",
-    prayer: "Prayer",
+    ui: "UI Language",
+    prayer: "Prayer Language",
+    languageMenuAria: "Open language settings",
     joyfulMysteries: "Joyful Mysteries",
     sorrowfulMysteries: "Sorrowful Mysteries",
     gloriousMysteries: "Glorious Mysteries",
@@ -224,12 +226,75 @@ const UI_TEXT = {
     swipeHint: "Links/rechts wischen • Perle tippen oder halten für Details",
     mysteryOfThisBead: "Geheimnis dieser Perle",
     addAfterJesus: 'Nach „Jesus“ einfügen',
-    ui: "UI",
-    prayer: "Gebet",
+    ui: "UI-Sprache",
+    prayer: "Gebetssprache",
+    languageMenuAria: "Spracheinstellungen öffnen",
     joyfulMysteries: "Freudenreicher Rosenkranz",
     sorrowfulMysteries: "Schmerzhafter Rosenkranz",
     gloriousMysteries: "Glorreicher Rosenkranz",
     luminousMysteries: "Lichtreicher Rosenkranz"
+  },
+  it: {
+    appTitle: "Rosario",
+    mysteryOfDay: "Mistero del giorno",
+    mysteryLabel: "Mistero",
+    mysteryTodayDefault: "Usa il mistero di oggi",
+    mysteryManualSuffix: "manuale",
+    currentPrayer: "Preghiera corrente",
+    opening: "Introduzione",
+    decade: "Decina",
+    stepOf: (current, total) => `Passo ${current} di ${total}`,
+    prayerView: "Vista della preghiera",
+    focusMode: "Modalità concentrazione",
+    showPrayerText: "Mostra testo della preghiera",
+    vibration: "Vibrazione",
+    prayerDetails: "Dettagli della preghiera",
+    actions: "Azioni",
+    resumePrayer: "Riprendi preghiera",
+    resetProgress: "Reimposta progresso",
+    previous: "Precedente",
+    next: "Successivo",
+    swipeHint: "Scorri a sinistra/destra per muoverti • Tocca o tieni premuta una perlina per i dettagli",
+    mysteryOfThisBead: "Mistero di questa perlina",
+    addAfterJesus: 'Aggiungi dopo "Gesù"',
+    ui: "Lingua UI",
+    prayer: "Lingua della preghiera",
+    languageMenuAria: "Apri impostazioni lingua",
+    joyfulMysteries: "Misteri Gaudiosi",
+    sorrowfulMysteries: "Misteri Dolorosi",
+    gloriousMysteries: "Misteri Gloriosi",
+    luminousMysteries: "Misteri Luminosi"
+  },
+  es: {
+    appTitle: "Rosario",
+    mysteryOfDay: "Misterio del día",
+    mysteryLabel: "Misterio",
+    mysteryTodayDefault: "Usar el misterio de hoy",
+    mysteryManualSuffix: "manual",
+    currentPrayer: "Oración actual",
+    opening: "Inicio",
+    decade: "Decena",
+    stepOf: (current, total) => `Paso ${current} de ${total}`,
+    prayerView: "Vista de oración",
+    focusMode: "Modo concentración",
+    showPrayerText: "Mostrar texto de la oración",
+    vibration: "Vibración",
+    prayerDetails: "Detalles de la oración",
+    actions: "Acciones",
+    resumePrayer: "Reanudar oración",
+    resetProgress: "Restablecer progreso",
+    previous: "Anterior",
+    next: "Siguiente",
+    swipeHint: "Desliza izquierda/derecha para avanzar • Toca o mantén una cuenta para ver detalles",
+    mysteryOfThisBead: "Misterio de esta cuenta",
+    addAfterJesus: 'Añadir después de "Jesús"',
+    ui: "Idioma de la interfaz",
+    prayer: "Idioma de la oración",
+    languageMenuAria: "Abrir ajustes de idioma",
+    joyfulMysteries: "Misterios Gozosos",
+    sorrowfulMysteries: "Misterios Dolorosos",
+    gloriousMysteries: "Misterios Gloriosos",
+    luminousMysteries: "Misterios Luminosos"
   }
 };
 
@@ -275,92 +340,32 @@ const LITURGY = {
       gloriousSetName: "Glorious Mysteries",
       luminousSetName: "Luminous Mysteries",
       joyful: [
-        {
-          title: "The Annunciation",
-          insert: "Jesus, whom thou, O Virgin, didst conceive by the Holy Spirit."
-        },
-        {
-          title: "The Visitation",
-          insert: "Jesus, whom thou, O Virgin, didst carry to Elizabeth."
-        },
-        {
-          title: "The Nativity",
-          insert: "Jesus, whom thou, O Virgin, didst bring forth."
-        },
-        {
-          title: "The Presentation in the Temple",
-          insert: "Jesus, whom thou, O Virgin, didst present in the Temple."
-        },
-        {
-          title: "The Finding in the Temple",
-          insert: "Jesus, whom thou, O Virgin, didst find in the Temple."
-        }
+        { title: "The Annunciation", insert: "Jesus, whom thou, O Virgin, didst conceive by the Holy Spirit." },
+        { title: "The Visitation", insert: "Jesus, whom thou, O Virgin, didst carry to Elizabeth." },
+        { title: "The Nativity", insert: "Jesus, whom thou, O Virgin, didst bring forth." },
+        { title: "The Presentation in the Temple", insert: "Jesus, whom thou, O Virgin, didst present in the Temple." },
+        { title: "The Finding in the Temple", insert: "Jesus, whom thou, O Virgin, didst find in the Temple." }
       ],
       sorrowful: [
-        {
-          title: "The Agony in the Garden",
-          insert: "Jesus, who for us did sweat blood in the garden."
-        },
-        {
-          title: "The Scourging at the Pillar",
-          insert: "Jesus, who for us was scourged at the pillar."
-        },
-        {
-          title: "The Crowning with Thorns",
-          insert: "Jesus, who for us was crowned with thorns."
-        },
-        {
-          title: "The Carrying of the Cross",
-          insert: "Jesus, who for us carried the heavy cross."
-        },
-        {
-          title: "The Crucifixion",
-          insert: "Jesus, who for us was crucified."
-        }
+        { title: "The Agony in the Garden", insert: "Jesus, who for us did sweat blood in the garden." },
+        { title: "The Scourging at the Pillar", insert: "Jesus, who for us was scourged at the pillar." },
+        { title: "The Crowning with Thorns", insert: "Jesus, who for us was crowned with thorns." },
+        { title: "The Carrying of the Cross", insert: "Jesus, who for us carried the heavy cross." },
+        { title: "The Crucifixion", insert: "Jesus, who for us was crucified." }
       ],
       glorious: [
-        {
-          title: "The Resurrection",
-          insert: "Jesus, who rose glorious from the dead."
-        },
-        {
-          title: "The Ascension",
-          insert: "Jesus, who ascended into heaven."
-        },
-        {
-          title: "The Descent of the Holy Spirit",
-          insert: "Jesus, who sent us the Holy Spirit."
-        },
-        {
-          title: "The Assumption",
-          insert: "Jesus, who took thee up into heaven."
-        },
-        {
-          title: "The Coronation of Mary",
-          insert: "Jesus, who crowned thee Queen of heaven and earth."
-        }
+        { title: "The Resurrection", insert: "Jesus, who rose glorious from the dead." },
+        { title: "The Ascension", insert: "Jesus, who ascended into heaven." },
+        { title: "The Descent of the Holy Spirit", insert: "Jesus, who sent us the Holy Spirit." },
+        { title: "The Assumption", insert: "Jesus, who took thee up into heaven." },
+        { title: "The Coronation of Mary", insert: "Jesus, who crowned thee Queen of heaven and earth." }
       ],
       luminous: [
-        {
-          title: "The Baptism of Jesus",
-          insert: "Jesus, who was baptized in the Jordan."
-        },
-        {
-          title: "The Wedding at Cana",
-          insert: "Jesus, who revealed His glory at Cana."
-        },
-        {
-          title: "The Proclamation of the Kingdom",
-          insert: "Jesus, who proclaimed the Kingdom of God."
-        },
-        {
-          title: "The Transfiguration",
-          insert: "Jesus, who was transfigured on the mountain."
-        },
-        {
-          title: "The Institution of the Eucharist",
-          insert: "Jesus, who gave us His Body and Blood in the Eucharist."
-        }
+        { title: "The Baptism of Jesus", insert: "Jesus, who was baptized in the Jordan." },
+        { title: "The Wedding at Cana", insert: "Jesus, who revealed His glory at Cana." },
+        { title: "The Proclamation of the Kingdom", insert: "Jesus, who proclaimed the Kingdom of God." },
+        { title: "The Transfiguration", insert: "Jesus, who was transfigured on the mountain." },
+        { title: "The Institution of the Eucharist", insert: "Jesus, who gave us His Body and Blood in the Eucharist." }
       ]
     }
   },
@@ -406,92 +411,32 @@ const LITURGY = {
       gloriousSetName: "Glorreicher Rosenkranz",
       luminousSetName: "Lichtreicher Rosenkranz",
       joyful: [
-        {
-          title: "Die Verkündigung des Herrn",
-          insert: "Jesus, den du, o Jungfrau, vom Heiligen Geist empfangen hast."
-        },
-        {
-          title: "Die Heimsuchung Mariens",
-          insert: "Jesus, den du, o Jungfrau, zu Elisabet getragen hast."
-        },
-        {
-          title: "Die Geburt Jesu",
-          insert: "Jesus, den du, o Jungfrau, geboren hast."
-        },
-        {
-          title: "Die Darstellung Jesu im Tempel",
-          insert: "Jesus, den du, o Jungfrau, im Tempel aufgeopfert hast."
-        },
-        {
-          title: "Die Wiederfindung Jesu im Tempel",
-          insert: "Jesus, den du, o Jungfrau, im Tempel wiedergefunden hast."
-        }
+        { title: "Die Verkündigung des Herrn", insert: "Jesus, den du, o Jungfrau, vom Heiligen Geist empfangen hast." },
+        { title: "Die Heimsuchung Mariens", insert: "Jesus, den du, o Jungfrau, zu Elisabet getragen hast." },
+        { title: "Die Geburt Jesu", insert: "Jesus, den du, o Jungfrau, geboren hast." },
+        { title: "Die Darstellung Jesu im Tempel", insert: "Jesus, den du, o Jungfrau, im Tempel aufgeopfert hast." },
+        { title: "Die Wiederfindung Jesu im Tempel", insert: "Jesus, den du, o Jungfrau, im Tempel wiedergefunden hast." }
       ],
       sorrowful: [
-        {
-          title: "Jesus, der für uns Blut geschwitzt hat",
-          insert: "der für uns Blut geschwitzt hat."
-        },
-        {
-          title: "Jesus, der für uns gegeißelt worden ist",
-          insert: "der für uns gegeißelt worden ist."
-        },
-        {
-          title: "Jesus, der für uns mit Dornen gekrönt worden ist",
-          insert: "der für uns mit Dornen gekrönt worden ist."
-        },
-        {
-          title: "Jesus, der für uns das schwere Kreuz getragen hat",
-          insert: "der für uns das schwere Kreuz getragen hat."
-        },
-        {
-          title: "Jesus, der für uns gekreuzigt worden ist",
-          insert: "der für uns gekreuzigt worden ist."
-        }
+        { title: "Jesus, der für uns Blut geschwitzt hat", insert: "der für uns Blut geschwitzt hat." },
+        { title: "Jesus, der für uns gegeißelt worden ist", insert: "der für uns gegeißelt worden ist." },
+        { title: "Jesus, der für uns mit Dornen gekrönt worden ist", insert: "der für uns mit Dornen gekrönt worden ist." },
+        { title: "Jesus, der für uns das schwere Kreuz getragen hat", insert: "der für uns das schwere Kreuz getragen hat." },
+        { title: "Jesus, der für uns gekreuzigt worden ist", insert: "der für uns gekreuzigt worden ist." }
       ],
       glorious: [
-        {
-          title: "Jesus, der von den Toten auferstanden ist",
-          insert: "der von den Toten auferstanden ist."
-        },
-        {
-          title: "Jesus, der in den Himmel aufgefahren ist",
-          insert: "der in den Himmel aufgefahren ist."
-        },
-        {
-          title: "Jesus, der uns den Heiligen Geist gesandt hat",
-          insert: "der uns den Heiligen Geist gesandt hat."
-        },
-        {
-          title: "Jesus, der dich, o Jungfrau, in den Himmel aufgenommen hat",
-          insert: "der dich, o Jungfrau, in den Himmel aufgenommen hat."
-        },
-        {
-          title: "Jesus, der dich, o Jungfrau, im Himmel gekrönt hat",
-          insert: "der dich, o Jungfrau, im Himmel gekrönt hat."
-        }
+        { title: "Jesus, der von den Toten auferstanden ist", insert: "der von den Toten auferstanden ist." },
+        { title: "Jesus, der in den Himmel aufgefahren ist", insert: "der in den Himmel aufgefahren ist." },
+        { title: "Jesus, der uns den Heiligen Geist gesandt hat", insert: "der uns den Heiligen Geist gesandt hat." },
+        { title: "Jesus, der dich, o Jungfrau, in den Himmel aufgenommen hat", insert: "der dich, o Jungfrau, in den Himmel aufgenommen hat." },
+        { title: "Jesus, der dich, o Jungfrau, im Himmel gekrönt hat", insert: "der dich, o Jungfrau, im Himmel gekrönt hat." }
       ],
       luminous: [
-        {
-          title: "Jesus, der von Johannes getauft worden ist",
-          insert: "der von Johannes getauft worden ist."
-        },
-        {
-          title: "Jesus, der sich bei der Hochzeit in Kana offenbart hat",
-          insert: "der sich bei der Hochzeit in Kana offenbart hat."
-        },
-        {
-          title: "Jesus, der uns das Reich Gottes verkündet hat",
-          insert: "der uns das Reich Gottes verkündet hat."
-        },
-        {
-          title: "Jesus, der auf dem Berg verklärt worden ist",
-          insert: "der auf dem Berg verklärt worden ist."
-        },
-        {
-          title: "Jesus, der uns die Eucharistie geschenkt hat",
-          insert: "der uns die Eucharistie geschenkt hat."
-        }
+        { title: "Jesus, der von Johannes getauft worden ist", insert: "der von Johannes getauft worden ist." },
+        { title: "Jesus, der sich bei der Hochzeit in Kana offenbart hat", insert: "der sich bei der Hochzeit in Kana offenbart hat." },
+        { title: "Jesus, der uns das Reich Gottes verkündet hat", insert: "der uns das Reich Gottes verkündet hat." },
+        { title: "Jesus, der auf dem Berg verklärt worden ist", insert: "der auf dem Berg verklärt worden ist." },
+        { title: "Jesus, der uns die Eucharistie geschenkt hat", insert: "der uns die Eucharistie geschenkt hat." }
       ]
     }
   },
@@ -537,92 +482,174 @@ const LITURGY = {
       gloriousSetName: "Mysteria Gloriosa",
       luminousSetName: "Mysteria Luminosa",
       joyful: [
-        {
-          title: "Annuntiatio",
-          insert: "Iesus, quem Virgo per Spiritum Sanctum concepisti."
-        },
-        {
-          title: "Visitatio",
-          insert: "Iesus, quem Virgo Elisabeth portasti."
-        },
-        {
-          title: "Nativitas",
-          insert: "Iesus, quem Virgo genuisti."
-        },
-        {
-          title: "Praesentatio in Templo",
-          insert: "Iesus, quem Virgo in templo praesentasti."
-        },
-        {
-          title: "Inventio in Templo",
-          insert: "Iesus, quem Virgo in templo invenisti."
-        }
+        { title: "Annuntiatio", insert: "Iesus, quem Virgo per Spiritum Sanctum concepisti." },
+        { title: "Visitatio", insert: "Iesus, quem Virgo Elisabeth portasti." },
+        { title: "Nativitas", insert: "Iesus, quem Virgo genuisti." },
+        { title: "Praesentatio in Templo", insert: "Iesus, quem Virgo in templo praesentasti." },
+        { title: "Inventio in Templo", insert: "Iesus, quem Virgo in templo invenisti." }
       ],
       sorrowful: [
-        {
-          title: "Agonia in horto",
-          insert: "Iesus, qui pro nobis sanguinem sudavit."
-        },
-        {
-          title: "Flagellatio",
-          insert: "Iesus, qui pro nobis flagellatus est."
-        },
-        {
-          title: "Coronatio spinea",
-          insert: "Iesus, qui pro nobis spinis coronatus est."
-        },
-        {
-          title: "Baiulatio crucis",
-          insert: "Iesus, qui pro nobis crucem baiulavit."
-        },
-        {
-          title: "Crucifixio",
-          insert: "Iesus, qui pro nobis crucifixus est."
-        }
+        { title: "Agonia in horto", insert: "Iesus, qui pro nobis sanguinem sudavit." },
+        { title: "Flagellatio", insert: "Iesus, qui pro nobis flagellatus est." },
+        { title: "Coronatio spinea", insert: "Iesus, qui pro nobis spinis coronatus est." },
+        { title: "Baiulatio crucis", insert: "Iesus, qui pro nobis crucem baiulavit." },
+        { title: "Crucifixio", insert: "Iesus, qui pro nobis crucifixus est." }
       ],
       glorious: [
-        {
-          title: "Resurrectio",
-          insert: "Iesus, qui a mortuis resurrexit."
-        },
-        {
-          title: "Ascensio",
-          insert: "Iesus, qui in caelum ascendit."
-        },
-        {
-          title: "Descensus Spiritus Sancti",
-          insert: "Iesus, qui nobis Spiritum Sanctum misit."
-        },
-        {
-          title: "Assumptio",
-          insert: "Iesus, qui te, Virgo, in caelum assumpsit."
-        },
-        {
-          title: "Coronatio Mariae",
-          insert: "Iesus, qui te, Virgo, in caelo coronavit."
-        }
+        { title: "Resurrectio", insert: "Iesus, qui a mortuis resurrexit." },
+        { title: "Ascensio", insert: "Iesus, qui in caelum ascendit." },
+        { title: "Descensus Spiritus Sancti", insert: "Iesus, qui nobis Spiritum Sanctum misit." },
+        { title: "Assumptio", insert: "Iesus, qui te, Virgo, in caelum assumpsit." },
+        { title: "Coronatio Mariae", insert: "Iesus, qui te, Virgo, in caelo coronavit." }
       ],
       luminous: [
-        {
-          title: "Baptisma in Iordane",
-          insert: "Iesus, qui in Iordane baptizatus est."
-        },
-        {
-          title: "Nuptiae Canae",
-          insert: "Iesus, qui apud Canense matrimonium se manifestavit."
-        },
-        {
-          title: "Proclamatio Regni Dei",
-          insert: "Iesus, qui Regnum Dei annuntiavit."
-        },
-        {
-          title: "Transfiguratio",
-          insert: "Iesus, qui in monte transfiguratus est."
-        },
-        {
-          title: "Institutio Eucharistiae",
-          insert: "Iesus, qui nobis Eucharistiam dedit."
-        }
+        { title: "Baptisma in Iordane", insert: "Iesus, qui in Iordane baptizatus est." },
+        { title: "Nuptiae Canae", insert: "Iesus, qui apud Canense matrimonium se manifestavit." },
+        { title: "Proclamatio Regni Dei", insert: "Iesus, qui Regnum Dei annuntiavit." },
+        { title: "Transfiguratio", insert: "Iesus, qui in monte transfiguratus est." },
+        { title: "Institutio Eucharistiae", insert: "Iesus, qui nobis Eucharistiam dedit." }
+      ]
+    }
+  },
+
+  it: {
+    prayerTitles: {
+      signOfCross: "Segno della Croce",
+      apostlesCreed: "Credo degli Apostoli",
+      hailMary: "Ave Maria",
+      ourFather: "Padre Nostro",
+      gloryBe: "Gloria al Padre",
+      fatimaPrayer: "Preghiera di Fatima"
+    },
+    prayers: {
+      signOfCross:
+        "Nel nome del Padre e del Figlio e dello Spirito Santo. Amen.",
+      apostlesCreed: "test",
+      hailMary:
+        "Ave Maria, piena di grazia, il Signore è con te. Tu sei benedetta fra le donne e benedetto è il frutto del tuo seno, Gesù. Santa Maria, Madre di Dio, prega per noi peccatori, adesso e nell'ora della nostra morte. Amen.",
+      ourFather:
+        "Padre nostro che sei nei cieli, sia santificato il tuo nome, venga il tuo regno, sia fatta la tua volontà, come in cielo così in terra. Dacci oggi il nostro pane quotidiano e rimetti a noi i nostri debiti come anche noi li rimettiamo ai nostri debitori, e non abbandonarci alla tentazione, ma liberaci dal male. Amen.",
+      gloryBe:
+        "Gloria al Padre e al Figlio e allo Spirito Santo. Come era nel principio, ora e sempre, nei secoli dei secoli. Amen.",
+      fatima:
+        "Gesù mio, perdona le nostre colpe, preservaci dal fuoco dell'inferno, porta in cielo tutte le anime, specialmente le più bisognose della tua misericordia."
+    },
+    meditations: {
+      beginSlowly: "Inizia lentamente. Raccogli la tua attenzione.",
+      enterPrayer: "Entra nella preghiera con intenzione.",
+      openingHailMary: (i) => `Ave Maria iniziale ${i} di 3.`,
+      pauseBeforeDecades: "Fermati un momento e rivolgi il cuore a Dio con la tua preghiera e le tue intenzioni.",
+      hailMaryOf10: (mysteryTitle, i) => `${mysteryTitle} • Ave Maria ${i} di 10`,
+      mysteryNumber: (decade, mysteryTitle) => `Mistero ${decade}: ${mysteryTitle}`
+    },
+    openingInsertions: [
+      "accresca in noi la fede.",
+      "rafforzi in noi la speranza.",
+      "infiammi in noi la carità."
+    ],
+    mysteries: {
+      joyfulSetName: "Misteri Gaudiosi",
+      sorrowfulSetName: "Misteri Dolorosi",
+      gloriousSetName: "Misteri Gloriosi",
+      luminousSetName: "Misteri Luminosi",
+      joyful: [
+        { title: "L'Annunciazione", insert: "Gesù, che tu, o Vergine, hai concepito per opera dello Spirito Santo." },
+        { title: "La Visitazione", insert: "Gesù, che tu, o Vergine, hai portato a Elisabetta." },
+        { title: "La Natività", insert: "Gesù, che tu, o Vergine, hai dato alla luce." },
+        { title: "La Presentazione al Tempio", insert: "Gesù, che tu, o Vergine, hai presentato al Tempio." },
+        { title: "Il Ritrovamento di Gesù nel Tempio", insert: "Gesù, che tu, o Vergine, hai ritrovato nel Tempio." }
+      ],
+      sorrowful: [
+        { title: "L'Agonia di Gesù nell'orto", insert: "Gesù, che per noi sudò sangue nell'orto." },
+        { title: "La Flagellazione di Gesù", insert: "Gesù, che per noi fu flagellato." },
+        { title: "L'Incoronazione di spine", insert: "Gesù, che per noi fu coronato di spine." },
+        { title: "Gesù porta la croce al Calvario", insert: "Gesù, che per noi portò la croce." },
+        { title: "La Crocifissione e morte di Gesù", insert: "Gesù, che per noi fu crocifisso." }
+      ],
+      glorious: [
+        { title: "La Risurrezione di Gesù", insert: "Gesù, che è risorto dai morti." },
+        { title: "L'Ascensione di Gesù al cielo", insert: "Gesù, che è asceso al cielo." },
+        { title: "La Discesa dello Spirito Santo", insert: "Gesù, che ci ha mandato lo Spirito Santo." },
+        { title: "L'Assunzione di Maria", insert: "Gesù, che ti ha assunto in cielo." },
+        { title: "L'Incoronazione di Maria", insert: "Gesù, che ti ha incoronata Regina del cielo e della terra." }
+      ],
+      luminous: [
+        { title: "Il Battesimo di Gesù al Giordano", insert: "Gesù, che fu battezzato nel Giordano." },
+        { title: "Le Nozze di Cana", insert: "Gesù, che manifestò la sua gloria a Cana." },
+        { title: "L'Annuncio del Regno di Dio", insert: "Gesù, che annunciò il Regno di Dio." },
+        { title: "La Trasfigurazione di Gesù", insert: "Gesù, che si trasfigurò sul monte." },
+        { title: "L'Istituzione dell'Eucaristia", insert: "Gesù, che ci donò il suo Corpo e il suo Sangue nell'Eucaristia." }
+      ]
+    }
+  },
+
+  es: {
+    prayerTitles: {
+      signOfCross: "Señal de la Cruz",
+      apostlesCreed: "Credo de los Apóstoles",
+      hailMary: "Dios te salve, María",
+      ourFather: "Padre Nuestro",
+      gloryBe: "Gloria",
+      fatimaPrayer: "Oración de Fátima"
+    },
+    prayers: {
+      signOfCross:
+        "En el nombre del Padre, y del Hijo, y del Espíritu Santo. Amén.",
+      apostlesCreed: "test",
+      hailMary:
+        "Dios te salve, María, llena eres de gracia, el Señor es contigo. Bendita tú eres entre todas las mujeres y bendito es el fruto de tu vientre, Jesús. Santa María, Madre de Dios, ruega por nosotros pecadores, ahora y en la hora de nuestra muerte. Amén.",
+      ourFather:
+        "Padre nuestro, que estás en el cielo, santificado sea tu nombre; venga a nosotros tu reino; hágase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada día; perdona nuestras ofensas, como también nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentación, y líbranos del mal. Amén.",
+      gloryBe:
+        "Gloria al Padre, y al Hijo, y al Espíritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén.",
+      fatima:
+        "Oh Jesús mío, perdona nuestros pecados, líbranos del fuego del infierno, lleva al cielo a todas las almas, especialmente a las más necesitadas de tu misericordia."
+    },
+    meditations: {
+      beginSlowly: "Comienza despacio. Recoge tu atención.",
+      enterPrayer: "Entra en la oración con intención.",
+      openingHailMary: (i) => `Dios te salve, María inicial ${i} de 3.`,
+      pauseBeforeDecades: "Haz una pausa y dirige tu corazón a Dios con tu oración y tus intenciones.",
+      hailMaryOf10: (mysteryTitle, i) => `${mysteryTitle} • Ave María ${i} de 10`,
+      mysteryNumber: (decade, mysteryTitle) => `Misterio ${decade}: ${mysteryTitle}`
+    },
+    openingInsertions: [
+      "aumente en nosotros la fe.",
+      "fortalezca en nosotros la esperanza.",
+      "encienda en nosotros la caridad."
+    ],
+    mysteries: {
+      joyfulSetName: "Misterios Gozosos",
+      sorrowfulSetName: "Misterios Dolorosos",
+      gloriousSetName: "Misterios Gloriosos",
+      luminousSetName: "Misterios Luminosos",
+      joyful: [
+        { title: "La Anunciación", insert: "Jesús, a quien tú, Virgen, concebiste por obra del Espíritu Santo." },
+        { title: "La Visitación", insert: "Jesús, a quien tú, Virgen, llevaste a Isabel." },
+        { title: "El Nacimiento de Jesús", insert: "Jesús, a quien tú, Virgen, diste a luz." },
+        { title: "La Presentación en el Templo", insert: "Jesús, a quien tú, Virgen, presentaste en el Templo." },
+        { title: "El Niño Jesús perdido y hallado en el Templo", insert: "Jesús, a quien tú, Virgen, hallaste en el Templo." }
+      ],
+      sorrowful: [
+        { title: "La Agonía de Jesús en el Huerto", insert: "Jesús, que por nosotros sudó sangre en el huerto." },
+        { title: "La Flagelación de Jesús", insert: "Jesús, que por nosotros fue azotado." },
+        { title: "La Coronación de espinas", insert: "Jesús, que por nosotros fue coronado de espinas." },
+        { title: "Jesús con la Cruz a cuestas", insert: "Jesús, que por nosotros llevó la cruz." },
+        { title: "La Crucifixión y Muerte de Jesús", insert: "Jesús, que por nosotros fue crucificado." }
+      ],
+      glorious: [
+        { title: "La Resurrección del Señor", insert: "Jesús, que resucitó de entre los muertos." },
+        { title: "La Ascensión del Señor", insert: "Jesús, que subió al cielo." },
+        { title: "La Venida del Espíritu Santo", insert: "Jesús, que nos envió el Espíritu Santo." },
+        { title: "La Asunción de María", insert: "Jesús, que te llevó al cielo." },
+        { title: "La Coronación de María", insert: "Jesús, que te coronó Reina del cielo y de la tierra." }
+      ],
+      luminous: [
+        { title: "El Bautismo de Jesús en el Jordán", insert: "Jesús, que fue bautizado en el Jordán." },
+        { title: "Las Bodas de Caná", insert: "Jesús, que manifestó su gloria en Caná." },
+        { title: "El Anuncio del Reino de Dios", insert: "Jesús, que proclamó el Reino de Dios." },
+        { title: "La Transfiguración", insert: "Jesús, que se transfiguró en el monte." },
+        { title: "La Institución de la Eucaristía", insert: "Jesús, que nos dio su Cuerpo y su Sangre en la Eucaristía." }
       ]
     }
   }
@@ -650,9 +677,10 @@ applySettings();
 applyUIText();
 renderCurrent();
 renderRosary();
-updateLanguageButtons();
+updateLanguageControls();
 updateMysteryPickerButtons();
 closeMysteryPicker();
+closeLanguageMenu();
 
 if (rosarySupabaseClient) {
   ensureAnonymousSession().then(async () => {
@@ -665,6 +693,16 @@ if (rosarySupabaseClient) {
 
 prevBtn.addEventListener("click", () => moveTo(getPreviousIndex(currentIndex)));
 nextBtn.addEventListener("click", () => moveTo(getNextIndex(currentIndex)));
+
+panelPrevBtn.addEventListener("click", () => {
+  moveTo(getPreviousIndex(currentIndex));
+  openPanel();
+});
+
+panelNextBtn.addEventListener("click", () => {
+  moveTo(getNextIndex(currentIndex));
+  openPanel();
+});
 
 resetBtn.addEventListener("click", () => {
   previousIndex = null;
@@ -695,12 +733,18 @@ vibrationToggle.addEventListener("change", () => {
   saveSettings();
 });
 
-uiLangEnBtn.addEventListener("click", () => setUiLanguage("en"));
-uiLangDeBtn.addEventListener("click", () => setUiLanguage("de"));
+languageMenuBtn.addEventListener("click", (e) => {
+  e.stopPropagation();
+  toggleLanguageMenu();
+});
 
-prayerLangEnBtn.addEventListener("click", () => setPrayerLanguage("en"));
-prayerLangDeBtn.addEventListener("click", () => setPrayerLanguage("de"));
-prayerLangLaBtn.addEventListener("click", () => setPrayerLanguage("la"));
+uiLanguageSelect.addEventListener("change", () => {
+  setUiLanguage(uiLanguageSelect.value);
+});
+
+prayerLanguageSelect.addEventListener("change", () => {
+  setPrayerLanguage(prayerLanguageSelect.value);
+});
 
 mysteryNameEl.addEventListener("click", (e) => {
   e.stopPropagation();
@@ -722,9 +766,19 @@ document.addEventListener("click", (e) => {
   ) {
     closeMysteryPicker();
   }
+
+  if (
+    languageMenuEl &&
+    !languageMenuEl.classList.contains("hidden") &&
+    !languageMenuEl.contains(e.target) &&
+    e.target !== languageMenuBtn
+  ) {
+    closeLanguageMenu();
+  }
 });
 
 setupSwipeNavigation();
+setupPanelSwipeNavigation();
 
 function ui() {
   return UI_TEXT[currentUILang] || UI_TEXT.en;
@@ -735,16 +789,16 @@ function liturgy() {
 }
 
 function setUiLanguage(lang) {
-  currentUILang = lang;
-  localStorage.setItem(UI_LANG_KEY, lang);
+  currentUILang = ["en", "de", "it", "es"].includes(lang) ? lang : "en";
+  localStorage.setItem(UI_LANG_KEY, currentUILang);
   applyUIText();
   renderCurrent();
-  updateLanguageButtons();
+  updateLanguageControls();
 }
 
 function setPrayerLanguage(lang) {
-  currentPrayerLang = lang;
-  localStorage.setItem(PRAYER_LANG_KEY, lang);
+  currentPrayerLang = ["en", "de", "la", "it", "es"].includes(lang) ? lang : "en";
+  localStorage.setItem(PRAYER_LANG_KEY, currentPrayerLang);
 
   rosaryNodes = buildRosaryData();
 
@@ -754,16 +808,12 @@ function setPrayerLanguage(lang) {
 
   renderCurrent();
   renderRosary();
-  updateLanguageButtons();
+  updateLanguageControls();
 }
 
-function updateLanguageButtons() {
-  uiLangEnBtn.classList.toggle("active", currentUILang === "en");
-  uiLangDeBtn.classList.toggle("active", currentUILang === "de");
-
-  prayerLangEnBtn.classList.toggle("active", currentPrayerLang === "en");
-  prayerLangDeBtn.classList.toggle("active", currentPrayerLang === "de");
-  prayerLangLaBtn.classList.toggle("active", currentPrayerLang === "la");
+function updateLanguageControls() {
+  uiLanguageSelect.value = currentUILang;
+  prayerLanguageSelect.value = currentPrayerLang;
 }
 
 function applyUIText() {
@@ -784,13 +834,17 @@ function applyUIText() {
 
   prevBtn.textContent = t.previous;
   nextBtn.textContent = t.next;
+  panelPrevBtn.textContent = t.previous;
+  panelNextBtn.textContent = t.next;
   resumeBtn.textContent = t.resumePrayer;
   resetBtn.textContent = t.resetProgress;
   swipeHintEl.textContent = t.swipeHint;
 
   uiLangLabelEl.textContent = t.ui;
   prayerLangLabelEl.textContent = t.prayer;
+
   infoToggleBtn.setAttribute("aria-label", t.prayerDetails);
+  languageMenuBtn.setAttribute("aria-label", t.languageMenuAria);
 
   mysteryAutoBtn.textContent = t.mysteryTodayDefault;
   mysteryJoyfulBtn.textContent = t.joyfulMysteries;
@@ -798,6 +852,7 @@ function applyUIText() {
   mysteryGloriousBtn.textContent = t.gloriousMysteries;
   mysteryLuminousBtn.textContent = t.luminousMysteries;
 
+  updateLanguageControls();
   updateMysteryPickerButtons();
   renderMysteryName();
   updatePanelForCurrentBead();
@@ -807,6 +862,8 @@ function stripLeadingJesus(insert) {
   return insert
     .replace(/^Jesus,\s*/i, "")
     .replace(/^Iesus,\s*/i, "")
+    .replace(/^Gesù,\s*/i, "")
+    .replace(/^Jesús,\s*/i, "")
     .trim();
 }
 
@@ -815,6 +872,14 @@ function buildInsertedHailMary(basePrayer, insert) {
 
   if (basePrayer.includes("Iesus.")) {
     return basePrayer.replace("Iesus.", `Iesus, ${cleanInsert}`);
+  }
+
+  if (basePrayer.includes("Gesù.")) {
+    return basePrayer.replace("Gesù.", `Gesù, ${cleanInsert}`);
+  }
+
+  if (basePrayer.includes("Jesús.")) {
+    return basePrayer.replace("Jesús.", `Jesús, ${cleanInsert}`);
   }
 
   return basePrayer.replace("Jesus.", `Jesus, ${cleanInsert}`);
@@ -885,6 +950,7 @@ function toggleMysteryPicker() {
   if (isHidden) {
     mysteryPickerEl.classList.remove("hidden");
     mysteryPickerEl.setAttribute("aria-hidden", "false");
+    closeLanguageMenu();
   } else {
     closeMysteryPicker();
   }
@@ -901,6 +967,23 @@ function updateMysteryPickerButtons() {
   mysterySorrowfulBtn.classList.toggle("active", currentMysteryChoice === "sorrowful");
   mysteryGloriousBtn.classList.toggle("active", currentMysteryChoice === "glorious");
   mysteryLuminousBtn.classList.toggle("active", currentMysteryChoice === "luminous");
+}
+
+function toggleLanguageMenu() {
+  const isHidden = languageMenuEl.classList.contains("hidden");
+
+  if (isHidden) {
+    languageMenuEl.classList.remove("hidden");
+    languageMenuEl.setAttribute("aria-hidden", "false");
+    closeMysteryPicker();
+  } else {
+    closeLanguageMenu();
+  }
+}
+
+function closeLanguageMenu() {
+  languageMenuEl.classList.add("hidden");
+  languageMenuEl.setAttribute("aria-hidden", "true");
 }
 
 function buildRosaryData() {
@@ -988,12 +1071,12 @@ function buildRosaryData() {
 function buildGeometry() {
   const nodes = [];
 
-  nodes.push({ x: 200, y: 664, kind: "cross" }); // 0
-  nodes.push({ x: 200, y: 600, kind: "large" }); // 1
-  nodes.push({ x: 200, y: 560, kind: "small" }); // 2
-  nodes.push({ x: 200, y: 520, kind: "small" }); // 3
-  nodes.push({ x: 200, y: 480, kind: "small" }); // 4
-  nodes.push({ x: 200, y: 440, kind: "large" }); // 5
+  nodes.push({ x: 200, y: 664, kind: "cross" });
+  nodes.push({ x: 200, y: 600, kind: "large" });
+  nodes.push({ x: 200, y: 560, kind: "small" });
+  nodes.push({ x: 200, y: 520, kind: "small" });
+  nodes.push({ x: 200, y: 480, kind: "small" });
+  nodes.push({ x: 200, y: 440, kind: "large" });
 
   const loopNodes = [];
   const cx = 200;
@@ -1517,12 +1600,12 @@ function loadSettings() {
 
 function loadUiLanguage() {
   const value = localStorage.getItem(UI_LANG_KEY);
-  return value === "de" ? "de" : "en";
+  return ["en", "de", "it", "es"].includes(value) ? value : "en";
 }
 
 function loadPrayerLanguage() {
   const value = localStorage.getItem(PRAYER_LANG_KEY);
-  return value === "de" || value === "la" ? value : "en";
+  return ["en", "de", "la", "it", "es"].includes(value) ? value : "en";
 }
 
 function setupSwipeNavigation() {
@@ -1577,6 +1660,50 @@ function setupSwipeNavigation() {
       } else {
         moveTo(getPreviousIndex(currentIndex));
       }
+    },
+    { passive: true }
+  );
+}
+
+function setupPanelSwipeNavigation() {
+  const sheet = document.querySelector(".settings-sheet");
+  if (!sheet) return;
+
+  let startX = 0;
+  let startY = 0;
+  let isTouching = false;
+
+  sheet.addEventListener(
+    "touchstart",
+    (e) => {
+      if (!e.touches.length) return;
+      const touch = e.touches[0];
+      startX = touch.clientX;
+      startY = touch.clientY;
+      isTouching = true;
+    },
+    { passive: true }
+  );
+
+  sheet.addEventListener(
+    "touchend",
+    (e) => {
+      if (!isTouching || !e.changedTouches.length) return;
+
+      const touch = e.changedTouches[0];
+      const dx = touch.clientX - startX;
+      const dy = touch.clientY - startY;
+      isTouching = false;
+
+      if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
+
+      if (dx < 0) {
+        moveTo(getNextIndex(currentIndex));
+      } else {
+        moveTo(getPreviousIndex(currentIndex));
+      }
+
+      openPanel();
     },
     { passive: true }
   );

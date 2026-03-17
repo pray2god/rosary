@@ -21,22 +21,16 @@
       </div>
 
       <div class="topbar-actions">
-        <div class="lang-switchers">
-          <div class="lang-group">
-            <span id="uiLangLabel" class="lang-label">UI</span>
-            <button id="uiLangEnBtn" class="mini-btn" type="button">EN</button>
-            <button id="uiLangDeBtn" class="mini-btn" type="button">DE</button>
-          </div>
+        <button
+          id="languageMenuBtn"
+          class="icon-btn"
+          type="button"
+          aria-label="Open language settings"
+        >
+          Aa
+        </button>
 
-          <div class="lang-group">
-            <span id="prayerLangLabel" class="lang-label">Prayer</span>
-            <button id="prayerLangEnBtn" class="mini-btn" type="button">EN</button>
-            <button id="prayerLangDeBtn" class="mini-btn" type="button">DE</button>
-            <button id="prayerLangLaBtn" class="mini-btn" type="button">LA</button>
-          </div>
-        </div>
-
-        <button id="infoToggleBtn" class="icon-btn" aria-label="Open prayer details">
+        <button id="infoToggleBtn" class="icon-btn" type="button" aria-label="Open prayer details">
           ☰
         </button>
       </div>
@@ -49,6 +43,31 @@
         <button id="mysterySorrowfulBtn" class="mystery-option" type="button"></button>
         <button id="mysteryGloriousBtn" class="mystery-option" type="button"></button>
         <button id="mysteryLuminousBtn" class="mystery-option" type="button"></button>
+      </div>
+    </div>
+
+    <div id="languageMenu" class="language-menu hidden" aria-hidden="true">
+      <div class="language-menu-card">
+        <div class="language-menu-section">
+          <label for="uiLanguageSelect" id="uiLangLabel" class="language-menu-label">UI Language</label>
+          <select id="uiLanguageSelect" class="language-select">
+            <option value="en">English</option>
+            <option value="de">Deutsch</option>
+            <option value="it">Italiano</option>
+            <option value="es">Español</option>
+          </select>
+        </div>
+
+        <div class="language-menu-section">
+          <label for="prayerLanguageSelect" id="prayerLangLabel" class="language-menu-label">Prayer Language</label>
+          <select id="prayerLanguageSelect" class="language-select">
+            <option value="en">English</option>
+            <option value="de">Deutsch</option>
+            <option value="la">Latina</option>
+            <option value="it">Italiano</option>
+            <option value="es">Español</option>
+          </select>
+        </div>
       </div>
     </div>
 
@@ -117,8 +136,8 @@
       </section>
 
       <section class="bottom-controls">
-        <button id="prevBtn" class="nav-btn">Previous</button>
-        <button id="nextBtn" class="nav-btn primary">Next</button>
+        <button id="prevBtn" class="nav-btn" type="button">Previous</button>
+        <button id="nextBtn" class="nav-btn primary" type="button">Next</button>
       </section>
 
       <div id="swipeHint" class="swipe-hint">
@@ -170,8 +189,10 @@
       <div class="sheet-section">
         <h3 id="actionsTitle">Actions</h3>
         <div class="action-grid">
-          <button id="resumeBtn" class="sheet-btn">Resume Prayer</button>
-          <button id="resetBtn" class="sheet-btn danger">Reset Progress</button>
+          <button id="panelPrevBtn" class="sheet-btn" type="button">Previous</button>
+          <button id="panelNextBtn" class="sheet-btn" type="button">Next</button>
+          <button id="resumeBtn" class="sheet-btn" type="button">Resume Prayer</button>
+          <button id="resetBtn" class="sheet-btn danger" type="button">Reset Progress</button>
         </div>
       </div>
     </div>

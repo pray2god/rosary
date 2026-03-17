@@ -677,3 +677,114 @@ body.focus-mode .active-glow {
   color: #fff7ee;
   border-color: rgba(199, 169, 122, 0.32);
 }
+
+.action-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* =========================
+   Language Menu
+   ========================= */
+
+.language-menu {
+  position: relative;
+  margin-top: -6px;
+  margin-bottom: 12px;
+  z-index: 36;
+}
+
+.language-menu-card {
+  margin-left: auto;
+  width: min(320px, 100%);
+  padding: 14px;
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, rgba(30, 20, 14, 0.98), rgba(16, 12, 9, 0.99));
+  border: 1px solid rgba(199, 169, 122, 0.14);
+  box-shadow: var(--shadow-soft);
+  display: grid;
+  gap: 14px;
+}
+
+.language-menu-section {
+  display: grid;
+  gap: 8px;
+}
+
+.language-menu-label {
+  font-size: 0.8rem;
+  color: var(--gold-soft);
+  letter-spacing: 0.04em;
+}
+
+.language-select {
+  width: 100%;
+  border: 1px solid rgba(199, 169, 122, 0.18);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)),
+    linear-gradient(180deg, #2a1a11, #17100b);
+  color: var(--text-main);
+  border-radius: 14px;
+  padding: 12px 14px;
+  font: inherit;
+  box-shadow: var(--shadow-soft);
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+}
+
+.language-select:focus {
+  border-color: rgba(199, 169, 122, 0.42);
+  box-shadow:
+    0 0 0 3px rgba(199, 169, 122, 0.12),
+    var(--shadow-soft);
+}
+
+.language-select option {
+  background: #1a120d;
+  color: var(--text-main);
+}
+
+/* Make globe and menu sit nicely together */
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Slight tweak so mystery picker and language menu feel related */
+.mystery-picker,
+.language-menu {
+  position: relative;
+}
+
+/* Focus mode compatibility */
+body.focus-mode .language-menu {
+  z-index: 40;
+}
+
+body.focus-mode .language-menu-card {
+  border-color: rgba(199, 169, 122, 0.22);
+  box-shadow:
+    0 18px 50px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(199, 169, 122, 0.05);
+}
+
+/* Mobile tightening */
+@media (max-width: 520px) {
+  .language-menu-card {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+.language-btn {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--gold-soft);
+}
