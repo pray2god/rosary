@@ -524,7 +524,7 @@ const LITURGY = {
     prayers: {
       signOfCross:
         "Nel nome del Padre e del Figlio e dello Spirito Santo. Amen.",
-      apostlesCreed: "test",
+      apostlesCreed: "Credo in Dio, Padre onnipotente, Creatore del cielo e della terra. E in Gesù Cristo, Suo Figlio unigenito, Signore nostro; il quale fu concepito di Spirito Santo, nato dalla vergine Maria; soffrì sotto Ponzio Pilato, fu crocifisso, morì e fu sepolto; discese agli inferi; il terzo giorno risuscitò dai morti; ascese al cielo; siede alla destra di Dio Padre onnipotente; da dove verrà per giudicare i vivi ed i morti. Io credo nello Spirito Santo; la santa Chiesa universale; la comunione dei santi; la remissione dei peccati; la risurrezione della carne; la vita eterna. Amen.",
       hailMary:
         "Ave Maria, piena di grazia, il Signore è con te. Tu sei benedetta fra le donne e benedetto è il frutto del tuo seno, Gesù. Santa Maria, Madre di Dio, prega per noi peccatori, adesso e nell'ora della nostra morte. Amen.",
       ourFather:
@@ -595,7 +595,7 @@ const LITURGY = {
     prayers: {
       signOfCross:
         "En el nombre del Padre, y del Hijo, y del Espíritu Santo. Amén.",
-      apostlesCreed: "test",
+      apostlesCreed: "Creo en Dios Padre, Todopoderoso, Creador del cielo y de la tierra. Y en Jesucristo, su único Hijo, Nuestro Señor, que fue concebido por obra y gracia del Espíritu Santo, nació de Santa María Virgen, padeció bajo el poder de Poncio Pilato, fue crucificado, muerto y sepultado, descendió a los infiernos, al tercer día resucitó entre los muertos, subió a los cielos y está sentado a la derecha de Dios Padre, Todopoderoso. Desde allí vendrá a juzgar a vivos y a muertos. Creo en el Espíritu Santo, la Santa Iglesia Cristiana, la comunión de los santos, el perdón de los pecados, la resurrección de la carne y la vida perdurable.  Amén.",
       hailMary:
         "Dios te salve, María, llena eres de gracia, el Señor es contigo. Bendita tú eres entre todas las mujeres y bendito es el fruto de tu vientre, Jesús. Santa María, Madre de Dios, ruega por nosotros pecadores, ahora y en la hora de nuestra muerte. Amén.",
       ourFather:
