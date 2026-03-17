@@ -10,7 +10,6 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body class="focus-mode">
-  
   <div class="app-shell">
     <header class="topbar">
       <div class="brand-wrap">
@@ -116,6 +115,15 @@
         Swipe left/right to move • Tap or hold a bead for details
       </div>
     </main>
+
+    <footer class="app-footer">
+      <a href="impressum.html">Impressum</a>
+    </footer>
+
+    <div class="simple-stats">
+      <p id="visitorsToday">Visitors today: —</p>
+      <p id="rosariesToday">Rosaries prayed today: —</p>
+    </div>
   </div>
 
   <aside id="settingsPanel" class="settings-panel hidden" aria-hidden="true">
@@ -159,6 +167,7 @@
     </div>
   </aside>
 
-  <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="rosary-app.js"></script>
 </body>
 </html>
