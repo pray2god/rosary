@@ -2,6 +2,14 @@ const STORAGE_KEY = "rosary-algorithmic-progress";
 const SETTINGS_KEY = "rosary-algorithmic-settings";
 const UI_LANG_KEY = "rosary-ui-language";
 const PRAYER_LANG_KEY = "rosary-prayer-language";
+const MYSTERY_CHOICE_KEY = "rosary-mystery-choice";
+
+const mysteryPickerEl = document.getElementById("mysteryPicker");
+const mysteryAutoBtn = document.getElementById("mysteryAutoBtn");
+const mysteryJoyfulBtn = document.getElementById("mysteryJoyfulBtn");
+const mysterySorrowfulBtn = document.getElementById("mysterySorrowfulBtn");
+const mysteryGloriousBtn = document.getElementById("mysteryGloriousBtn");
+const mysteryLuminousBtn = document.getElementById("mysteryLuminousBtn");
 
 const mysteryNameEl = document.getElementById("mysteryName");
 const prayerTitleEl = document.getElementById("prayerTitle");
@@ -60,6 +68,7 @@ const rosarySupabaseClient =
   window.supabase && typeof window.supabase.createClient === "function"
     ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
     : null;
+
 async function ensureAnonymousSession() {
   if (!rosarySupabaseClient) {
     console.error("Supabase client not available.");
@@ -68,11 +77,11 @@ async function ensureAnonymousSession() {
 
   const {
     data: { session }
-    } = await rosarySupabaseClient.auth.getSession();
+  } = await rosarySupabaseClient.auth.getSession();
 
   if (session) return session;
 
-const { data, error } = await rosarySupabaseClient.auth.signInAnonymously();
+  const { data, error } = await rosarySupabaseClient.auth.signInAnonymously();
 
   if (error) {
     console.error("Anonymous sign-in failed:", error);
@@ -165,6 +174,9 @@ const UI_TEXT = {
   en: {
     appTitle: "Rosary",
     mysteryOfDay: "Mystery of the day",
+    mysteryLabel: "Mystery",
+    mysteryTodayDefault: "Use today's mystery",
+    mysteryManualSuffix: "manual",
     currentPrayer: "Current prayer",
     opening: "Opening",
     decade: "Decade",
@@ -183,11 +195,18 @@ const UI_TEXT = {
     mysteryOfThisBead: "Mystery of this bead",
     addAfterJesus: 'Add after "Jesus"',
     ui: "UI",
-    prayer: "Prayer"
+    prayer: "Prayer",
+    joyfulMysteries: "Joyful Mysteries",
+    sorrowfulMysteries: "Sorrowful Mysteries",
+    gloriousMysteries: "Glorious Mysteries",
+    luminousMysteries: "Luminous Mysteries"
   },
   de: {
     appTitle: "Rosenkranz",
     mysteryOfDay: "Tagesmysterium",
+    mysteryLabel: "Geheimnis",
+    mysteryTodayDefault: "Tagesmysterium verwenden",
+    mysteryManualSuffix: "manuell",
     currentPrayer: "Aktuelles Gebet",
     opening: "Einleitung",
     decade: "Gesätz",
@@ -206,7 +225,11 @@ const UI_TEXT = {
     mysteryOfThisBead: "Geheimnis dieser Perle",
     addAfterJesus: 'Nach „Jesus“ einfügen',
     ui: "UI",
-    prayer: "Gebet"
+    prayer: "Gebet",
+    joyfulMysteries: "Freudenreicher Rosenkranz",
+    sorrowfulMysteries: "Schmerzhafter Rosenkranz",
+    gloriousMysteries: "Glorreicher Rosenkranz",
+    luminousMysteries: "Lichtreicher Rosenkranz"
   }
 };
 
@@ -223,8 +246,7 @@ const LITURGY = {
     prayers: {
       signOfCross:
         "In the name of the Father, and of the Son, and of the Holy Spirit. Amen.",
-      apostlesCreed:
-        "I believe in God, the Father almighty, Creator of heaven and earth, and in Jesus Christ, his only Son, our Lord, who was conceived by the Holy Spirit, born of the Virgin Mary, suffered under Pontius Pilate, was crucified, died and was buried; he descended into hell; on the third day he rose again from the dead; he ascended into heaven, and is seated at the right hand of God the Father almighty; from there he will come to judge the living and the dead. I believe in the Holy Spirit, the holy catholic Church, the communion of saints, the forgiveness of sins, the resurrection of the body, and life everlasting. Amen.",
+      apostlesCreed: "I believe in God, the Father almighty, Creator of heaven and earth, and in Jesus Christ, his only Son, our Lord, who was conceived by the Holy Spirit, born of the Virgin Mary, suffered under Pontius Pilate, was crucified, died and was buried; he descended into hell; on the third day he rose again from the dead; he ascended into heaven, and is seated at the right hand of God the Father almighty; from there he will come to judge the living and the dead. I believe in the Holy Spirit, the holy catholic Church, the communion of saints, the forgiveness of sins, the resurrection of the body, and life everlasting. Amen.",
       hailMary:
         "Hail Mary, full of grace, the Lord is with thee. Blessed art thou among women, and blessed is the fruit of thy womb, Jesus. Holy Mary, Mother of God, pray for us sinners, now and at the hour of our death. Amen.",
       ourFather:
@@ -355,8 +377,7 @@ const LITURGY = {
     prayers: {
       signOfCross:
         "Im Namen des Vaters und des Sohnes und des Heiligen Geistes. Amen.",
-      apostlesCreed:
-         "Ich glaube an Gott den Vater, den Allmächtigen, den Schöpfer des Himmels und der Erde. Und an Jesus Christus, seinen eingeborenen Sohn, unsern Herrn, empfangen durch den Heiligen Geist, geboren aus der Jungfrau Maria, gelitten unter Pontius Pilatus, gekreuzigt, gestorben und begraben, hinabgestiegen in das Reich des Todes, am dritten Tag auferstanden von den Toten, aufgefahren in den Himmel; er sitzt zur Rechten Gottes, des allmächtigen Vaters; von dort wird er kommen, zu richten die Lebenden und die Toten. Ich glaube an den Heiligen Geist, die heilige katholische Kirche, Gemeinschaft der Heiligen, Vergebung der Sünden, Auferstehung der Toten und das ewige Leben. Amen.",
+      apostlesCreed:  "Ich glaube an Gott den Vater, den Allmächtigen, den Schöpfer des Himmels und der Erde. Und an Jesus Christus, seinen eingeborenen Sohn, unsern Herrn, empfangen durch den Heiligen Geist, geboren aus der Jungfrau Maria, gelitten unter Pontius Pilatus, gekreuzigt, gestorben und begraben, hinabgestiegen in das Reich des Todes, am dritten Tag auferstanden von den Toten, aufgefahren in den Himmel; er sitzt zur Rechten Gottes, des allmächtigen Vaters; von dort wird er kommen, zu richten die Lebenden und die Toten. Ich glaube an den Heiligen Geist, die heilige katholische Kirche, Gemeinschaft der Heiligen, Vergebung der Sünden, Auferstehung der Toten und das ewige Leben. Amen.",
       hailMary:
         "Gegrüßet seist du, Maria, voll der Gnade, der Herr ist mit dir. Du bist gebenedeit unter den Frauen und gebenedeit ist die Frucht deines Leibes, Jesus. Heilige Maria, Mutter Gottes, bitte für uns Sünder jetzt und in der Stunde unseres Todes. Amen.",
       ourFather:
@@ -487,8 +508,7 @@ const LITURGY = {
     prayers: {
       signOfCross:
         "In nomine Patris, et Filii, et Spiritus Sancti. Amen.",
-      apostlesCreed:
-        "Credo in Deum Patrem omnipotentem, Creatorem caeli et terrae. Et in Iesum Christum, Filium eius unicum, Dominum nostrum, qui conceptus est de Spiritu Sancto, natus ex Maria Virgine, passus sub Pontio Pilato, crucifixus, mortuus, et sepultus, descendit ad inferos, tertia die resurrexit a mortuis, ascendit ad caelos, sedet ad dexteram Dei Patris omnipotentis, inde venturus est iudicare vivos et mortuos. Credo in Spiritum Sanctum, sanctam Ecclesiam catholicam, sanctorum communionem, remissionem peccatorum, carnis resurrectionem, vitam aeternam. Amen.",
+      apostlesCreed: "Credo in Deum Patrem omnipotentem, Creatorem caeli et terrae. Et in Iesum Christum, Filium eius unicum, Dominum nostrum, qui conceptus est de Spiritu Sancto, natus ex Maria Virgine, passus sub Pontio Pilato, crucifixus, mortuus, et sepultus, descendit ad inferos, tertia die resurrexit a mortuis, ascendit ad caelos, sedet ad dexteram Dei Patris omnipotentis, inde venturus est iudicare vivos et mortuos. Credo in Spiritum Sanctum, sanctam Ecclesiam catholicam, sanctorum communionem, remissionem peccatorum, carnis resurrectionem, vitam aeternam. Amen.",
       hailMary:
         "Ave Maria, gratia plena, Dominus tecum. Benedicta tu in mulieribus, et benedictus fructus ventris tui, Iesus. Sancta Maria, Mater Dei, ora pro nobis peccatoribus nunc et in hora mortis nostrae. Amen.",
       ourFather:
@@ -611,6 +631,7 @@ const LITURGY = {
 let cancelActiveLongPress = null;
 let currentUILang = loadUiLanguage();
 let currentPrayerLang = loadPrayerLanguage();
+let currentMysteryChoice = loadMysteryChoice();
 let settings = loadSettings();
 let previousIndex = null;
 
@@ -630,6 +651,8 @@ applyUIText();
 renderCurrent();
 renderRosary();
 updateLanguageButtons();
+updateMysteryPickerButtons();
+closeMysteryPicker();
 
 if (rosarySupabaseClient) {
   ensureAnonymousSession().then(async () => {
@@ -678,6 +701,28 @@ uiLangDeBtn.addEventListener("click", () => setUiLanguage("de"));
 prayerLangEnBtn.addEventListener("click", () => setPrayerLanguage("en"));
 prayerLangDeBtn.addEventListener("click", () => setPrayerLanguage("de"));
 prayerLangLaBtn.addEventListener("click", () => setPrayerLanguage("la"));
+
+mysteryNameEl.addEventListener("click", (e) => {
+  e.stopPropagation();
+  toggleMysteryPicker();
+});
+
+mysteryAutoBtn.addEventListener("click", () => setMysteryChoice("auto"));
+mysteryJoyfulBtn.addEventListener("click", () => setMysteryChoice("joyful"));
+mysterySorrowfulBtn.addEventListener("click", () => setMysteryChoice("sorrowful"));
+mysteryGloriousBtn.addEventListener("click", () => setMysteryChoice("glorious"));
+mysteryLuminousBtn.addEventListener("click", () => setMysteryChoice("luminous"));
+
+document.addEventListener("click", (e) => {
+  if (
+    mysteryPickerEl &&
+    !mysteryPickerEl.classList.contains("hidden") &&
+    !mysteryPickerEl.contains(e.target) &&
+    e.target !== mysteryNameEl
+  ) {
+    closeMysteryPicker();
+  }
+});
 
 setupSwipeNavigation();
 
@@ -747,6 +792,13 @@ function applyUIText() {
   prayerLangLabelEl.textContent = t.prayer;
   infoToggleBtn.setAttribute("aria-label", t.prayerDetails);
 
+  mysteryAutoBtn.textContent = t.mysteryTodayDefault;
+  mysteryJoyfulBtn.textContent = t.joyfulMysteries;
+  mysterySorrowfulBtn.textContent = t.sorrowfulMysteries;
+  mysteryGloriousBtn.textContent = t.gloriousMysteries;
+  mysteryLuminousBtn.textContent = t.luminousMysteries;
+
+  updateMysteryPickerButtons();
   renderMysteryName();
   updatePanelForCurrentBead();
 }
@@ -766,6 +818,89 @@ function buildInsertedHailMary(basePrayer, insert) {
   }
 
   return basePrayer.replace("Jesus.", `Jesus, ${cleanInsert}`);
+}
+
+function loadMysteryChoice() {
+  const value = localStorage.getItem(MYSTERY_CHOICE_KEY);
+  return ["auto", "joyful", "sorrowful", "glorious", "luminous"].includes(value)
+    ? value
+    : "auto";
+}
+
+function saveMysteryChoice() {
+  localStorage.setItem(MYSTERY_CHOICE_KEY, currentMysteryChoice);
+}
+
+function getDefaultMysteryKeyForToday() {
+  const day = new Date().getDay();
+
+  if (day === 1 || day === 6) return "joyful";
+  if (day === 2 || day === 5) return "sorrowful";
+  if (day === 4) return "luminous";
+  return "glorious";
+}
+
+function getActiveMysteryKey() {
+  return currentMysteryChoice === "auto"
+    ? getDefaultMysteryKeyForToday()
+    : currentMysteryChoice;
+}
+
+function getMysterySetByKey(key) {
+  const mysteries = liturgy().mysteries;
+  return mysteries[key] || mysteries.glorious;
+}
+
+function getMysterySetNameByKey(key) {
+  const mysteries = liturgy().mysteries;
+
+  if (key === "joyful") return mysteries.joyfulSetName;
+  if (key === "sorrowful") return mysteries.sorrowfulSetName;
+  if (key === "luminous") return mysteries.luminousSetName;
+  return mysteries.gloriousSetName;
+}
+
+function setMysteryChoice(choice) {
+  currentMysteryChoice = choice;
+  saveMysteryChoice();
+
+  rosaryNodes = buildRosaryData();
+
+  if (currentIndex >= rosaryNodes.length) {
+    currentIndex = 0;
+  }
+
+  previousIndex = null;
+  saveProgress();
+  renderMysteryName();
+  renderCurrent();
+  renderRosary();
+  updateMysteryPickerButtons();
+  closeMysteryPicker();
+}
+
+function toggleMysteryPicker() {
+  const isHidden = mysteryPickerEl.classList.contains("hidden");
+
+  if (isHidden) {
+    mysteryPickerEl.classList.remove("hidden");
+    mysteryPickerEl.setAttribute("aria-hidden", "false");
+  } else {
+    closeMysteryPicker();
+  }
+}
+
+function closeMysteryPicker() {
+  mysteryPickerEl.classList.add("hidden");
+  mysteryPickerEl.setAttribute("aria-hidden", "true");
+}
+
+function updateMysteryPickerButtons() {
+  mysteryAutoBtn.classList.toggle("active", currentMysteryChoice === "auto");
+  mysteryJoyfulBtn.classList.toggle("active", currentMysteryChoice === "joyful");
+  mysterySorrowfulBtn.classList.toggle("active", currentMysteryChoice === "sorrowful");
+  mysteryGloriousBtn.classList.toggle("active", currentMysteryChoice === "glorious");
+  mysteryLuminousBtn.classList.toggle("active", currentMysteryChoice === "luminous");
 }
 
 function buildRosaryData() {
@@ -849,6 +984,7 @@ function buildRosaryData() {
 
   return beads;
 }
+
 function buildGeometry() {
   const nodes = [];
 
@@ -892,23 +1028,11 @@ function buildGeometry() {
 }
 
 function getMysterySetForToday() {
-  const day = new Date().getDay();
-  const mysteries = liturgy().mysteries;
-
-  if (day === 1 || day === 6) return mysteries.joyful;
-  if (day === 2 || day === 5) return mysteries.sorrowful;
-  if (day === 4) return mysteries.luminous;
-  return mysteries.glorious;
+  return getMysterySetByKey(getActiveMysteryKey());
 }
 
 function getMysteryNameForToday() {
-  const day = new Date().getDay();
-  const mysteries = liturgy().mysteries;
-
-  if (day === 1 || day === 6) return mysteries.joyfulSetName;
-  if (day === 2 || day === 5) return mysteries.sorrowfulSetName;
-  if (day === 4) return mysteries.luminousSetName;
-  return mysteries.gloriousSetName;
+  return getMysterySetNameByKey(getActiveMysteryKey());
 }
 
 function getSectionLabel(bead) {
@@ -922,7 +1046,11 @@ function getSectionLabel(bead) {
 }
 
 function renderMysteryName() {
-  mysteryNameEl.textContent = `${ui().mysteryOfDay}: ${getMysteryNameForToday()}`;
+  const label = ui().mysteryLabel || ui().mysteryOfDay;
+  const name = getMysteryNameForToday();
+  const suffix = currentMysteryChoice === "auto" ? "" : ` • ${ui().mysteryManualSuffix}`;
+
+  mysteryNameEl.textContent = `${label}: ${name}${suffix}`;
 }
 
 function getDisplayBead(index = currentIndex) {
@@ -967,6 +1095,8 @@ function getDisplayBead(index = currentIndex) {
 
 function renderCurrent() {
   const bead = getDisplayBead(currentIndex);
+  if (!bead) return;
+
   prayerTitleEl.textContent = bead.prayerTitle;
   sectionLabelEl.textContent = getSectionLabel(bead);
   progressLabelEl.textContent = ui().stepOf(currentIndex + 1, rosaryNodes.length);
@@ -976,6 +1106,8 @@ function renderCurrent() {
 
 function updatePanelForCurrentBead(index = currentIndex) {
   const bead = getDisplayBead(index);
+  if (!bead) return;
+
   const t = ui();
 
   panelPrayerTitle.textContent = bead.prayerTitle;

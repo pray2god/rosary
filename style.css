@@ -620,3 +620,60 @@ body.focus-mode .active-glow {
 .simple-stats p {
   margin: 6px 0;
 }
+
+
+.mystery-trigger {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+}
+
+.mystery-trigger:hover {
+  color: var(--gold-soft);
+}
+
+.mystery-trigger::after {
+  content: " ▾";
+  font-size: 0.8em;
+  opacity: 0.8;
+}
+
+.mystery-picker {
+  position: relative;
+  margin-top: -6px;
+  margin-bottom: 12px;
+  z-index: 35;
+}
+
+.mystery-picker-card {
+  margin-left: 30px;
+  padding: 10px;
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(30, 20, 14, 0.98), rgba(16, 12, 9, 0.99));
+  border: 1px solid rgba(199, 169, 122, 0.14);
+  box-shadow: var(--shadow-soft);
+  display: grid;
+  gap: 8px;
+}
+
+.mystery-option {
+  border: 1px solid rgba(199, 169, 122, 0.16);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-main);
+  border-radius: 14px;
+  padding: 10px 12px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mystery-option.active {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03)),
+    linear-gradient(180deg, #6d482c, #372013);
+  color: #fff7ee;
+  border-color: rgba(199, 169, 122, 0.32);
+}

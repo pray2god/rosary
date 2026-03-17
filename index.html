@@ -6,7 +6,6 @@
     name="viewport"
     content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
   />
-  
   <title>Rosary</title>
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -17,7 +16,7 @@
         <div class="brand-mark"></div>
         <div>
           <h1 id="appTitle">Rosary</h1>
-          <p id="mysteryName" class="mystery-line"></p>
+          <button id="mysteryName" class="mystery-line mystery-trigger" type="button"></button>
         </div>
       </div>
 
@@ -42,6 +41,16 @@
         </button>
       </div>
     </header>
+
+    <div id="mysteryPicker" class="mystery-picker hidden" aria-hidden="true">
+      <div class="mystery-picker-card">
+        <button id="mysteryAutoBtn" class="mystery-option" type="button"></button>
+        <button id="mysteryJoyfulBtn" class="mystery-option" type="button"></button>
+        <button id="mysterySorrowfulBtn" class="mystery-option" type="button"></button>
+        <button id="mysteryGloriousBtn" class="mystery-option" type="button"></button>
+        <button id="mysteryLuminousBtn" class="mystery-option" type="button"></button>
+      </div>
+    </div>
 
     <main id="gestureArea" class="main">
       <section class="hero-card">
