@@ -3,7 +3,6 @@ const SETTINGS_KEY = "rosary-algorithmic-settings";
 const UI_LANG_KEY = "rosary-ui-language";
 const PRAYER_LANG_KEY = "rosary-prayer-language";
 
-
 const mysteryNameEl = document.getElementById("mysteryName");
 const prayerTitleEl = document.getElementById("prayerTitle");
 const sectionLabelEl = document.getElementById("sectionLabel");
@@ -239,7 +238,7 @@ const LITURGY = {
       beginSlowly: "Begin slowly. Settle your attention.",
       enterPrayer: "Enter prayer with intention.",
       openingHailMary: (i) => `Opening Hail Mary ${i} of 3.`,
-      pauseBeforeDecades: "Pause before entering the decades.",
+      pauseBeforeDecades: "Pause for a moment, and turn your heart in prayer and intention toward God.",
       hailMaryOf10: (mysteryTitle, i) => `${mysteryTitle} • Hail Mary ${i} of 10`,
       mysteryNumber: (decade, mysteryTitle) => `Mystery ${decade}: ${mysteryTitle}`
     },
@@ -368,10 +367,10 @@ const LITURGY = {
         "O mein Jesus, verzeih uns unsere Sünden! Bewahre uns vor dem Feuer der Hölle! Führe alle Seelen in den Himmel, besonders jene, die deiner Barmherzigkeit am meisten bedürfen. Amen."
     },
     meditations: {
-      beginSlowly: "Beginne langsam. Sammle deine Aufmerksamkeit.",
-      enterPrayer: "Tritt mit innerer Sammlung ins Gebet ein.",
+      beginSlowly: "",
+      enterPrayer: "",
       openingHailMary: (i) => `Einleitendes Gegrüßet seist du, Maria ${i} von 3.`,
-      pauseBeforeDecades: "Halte kurz inne, bevor die Gesätze beginnen.",
+      pauseBeforeDecades: "Halte kurz inne und richte Dich mit Deinen Gebeten und Anliegen an Gott.",
       hailMaryOf10: (mysteryTitle, i) => `${mysteryTitle} • Ave Maria ${i} von 10`,
       mysteryNumber: (decade, mysteryTitle) => `${decade}. Geheimnis: ${mysteryTitle}`
     },
@@ -500,10 +499,10 @@ const LITURGY = {
         "O mi Iesu, dimitte nobis debita nostra, libera nos ab igne inferni, conduc in caelum omnes animas, praesertim illas quae maxime indigent misericordia tua."
     },
     meditations: {
-      beginSlowly: "Incipe lente. Animum compone.",
-      enterPrayer: "Intentione in orationem ingredere.",
+      beginSlowly: "",
+      enterPrayer: "",
       openingHailMary: (i) => `Ave Maria initii ${i} ex 3.`,
-      pauseBeforeDecades: "Siste paulisper ante decadas.",
+      pauseBeforeDecades: "",
       hailMaryOf10: (mysteryTitle, i) => `${mysteryTitle} • Ave Maria ${i} ex 10`,
       mysteryNumber: (decade, mysteryTitle) => `Mysterium ${decade}: ${mysteryTitle}`
     },
@@ -777,8 +776,8 @@ function buildRosaryData() {
   beads.push({
     type: "cross",
     sectionKey: "opening",
-    prayerTitle: lit.prayerTitles.signOfCross,
-    prayerText: lit.prayers.signOfCross,
+    prayerTitle: `${lit.prayerTitles.signOfCross} • ${lit.prayerTitles.apostlesCreed}`,
+    prayerText: `${lit.prayers.signOfCross}\n\n${lit.prayers.apostlesCreed}`,
     mysteryTitle: "",
     mysteryInsert: "",
     mysteryText: lit.meditations.beginSlowly
@@ -787,8 +786,8 @@ function buildRosaryData() {
   beads.push({
     type: "large",
     sectionKey: "opening",
-    prayerTitle: lit.prayerTitles.apostlesCreed,
-    prayerText: lit.prayers.apostlesCreed,
+    prayerTitle: lit.prayerTitles.ourFather,
+    prayerText: lit.prayers.ourFather,
     mysteryTitle: "",
     mysteryInsert: "",
     mysteryText: lit.meditations.enterPrayer
@@ -811,8 +810,8 @@ function buildRosaryData() {
   beads.push({
     type: "large",
     sectionKey: "opening",
-    prayerTitle: lit.prayerTitles.ourFather,
-    prayerText: lit.prayers.ourFather,
+    prayerTitle: lit.prayerTitles.gloryBe,
+    prayerText: lit.prayers.gloryBe,
     mysteryTitle: "",
     mysteryInsert: "",
     mysteryText: lit.meditations.pauseBeforeDecades
@@ -850,7 +849,6 @@ function buildRosaryData() {
 
   return beads;
 }
-
 function buildGeometry() {
   const nodes = [];
 
