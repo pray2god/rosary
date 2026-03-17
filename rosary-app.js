@@ -3,6 +3,7 @@ const SETTINGS_KEY = "rosary-algorithmic-settings";
 const UI_LANG_KEY = "rosary-ui-language";
 const PRAYER_LANG_KEY = "rosary-prayer-language";
 
+
 const mysteryNameEl = document.getElementById("mysteryName");
 const prayerTitleEl = document.getElementById("prayerTitle");
 const sectionLabelEl = document.getElementById("sectionLabel");
