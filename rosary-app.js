@@ -382,7 +382,7 @@ const LITURGY = {
     prayers: {
       signOfCross:
         "Im Namen des Vaters und des Sohnes und des Heiligen Geistes. Amen.",
-      apostlesCreed:  "Ich glaube an Gott den Vater, den Allmächtigen, den Schöpfer des Himmels und der Erde. Und an Jesus Christus, seinen eingeborenen Sohn, unsern Herrn, empfangen durch den Heiligen Geist, geboren aus der Jungfrau Maria, gelitten unter Pontius Pilatus, gekreuzigt, gestorben und begraben, hinabgestiegen in das Reich des Todes, am dritten Tag auferstanden von den Toten, aufgefahren in den Himmel; er sitzt zur Rechten Gottes, des allmächtigen Vaters; von dort wird er kommen, zu richten die Lebenden und die Toten. Ich glaube an den Heiligen Geist, die heilige katholische Kirche, Gemeinschaft der Heiligen, Vergebung der Sünden, Auferstehung der Toten und das ewige Leben. Amen.",
+      apostlesCreed:  "Ich glaube an Gott den Vater, den Allmächtigen, den Schöpfer des Himmels und der Erde. Und an Jesus Christus, seinen eingeborenen Sohn, unsern Herrn, empfangen durch den Heiligen Geist, geboren von der Jungfrau Maria, gelitten unter Pontius Pilatus, gekreuzigt, gestorben und begraben, hinabgestiegen in das Reich des Todes, am dritten Tag auferstanden von den Toten, aufgefahren in den Himmel; er sitzt zur Rechten Gottes, des allmächtigen Vaters; von dort wird er kommen, zu richten die Lebenden und die Toten. Ich glaube an den Heiligen Geist, die heilige katholische Kirche, Gemeinschaft der Heiligen, Vergebung der Sünden, Auferstehung der Toten und das ewige Leben. Amen.",
       hailMary:
         "Gegrüßet seist du, Maria, voll der Gnade, der Herr ist mit dir. Du bist gebenedeit unter den Frauen und gebenedeit ist die Frucht deines Leibes, Jesus. Heilige Maria, Mutter Gottes, bitte für uns Sünder jetzt und in der Stunde unseres Todes. Amen.",
       ourFather:
@@ -1322,14 +1322,41 @@ function drawCord() {
 }
 
 function drawBeads() {
+  const currentBead = rosaryNodes[currentIndex];
+  const activeDecadeNumber =
+    currentBead?.type === "small" && currentBead?.sectionKey === "decade"
+      ? currentBead.decadeNumber
+      : null;
+
   rosaryGeometry.nodes.forEach((node, index) => {
     if (index === 0) {
       drawCross(node, index === currentIndex);
       return;
     }
 
+    const bead = rosaryNodes[index];
+    const isInActiveDecade =
+      activeDecadeNumber !== null &&
+      bead.type === "small" &&
+      bead.sectionKey === "decade" &&
+      bead.decadeNumber === activeDecadeNumber;
+
+    // On mobile the ten Ave-Maria beads act as one easy-to-hit decade group.
+    // Keep a soft glow on the whole decade, while the exact current bead
+    // still gets the stronger normal active glow.
+    if (isInActiveDecade && index !== currentIndex) {
+      beadLayer.appendChild(
+        makeSvg("circle", {
+          cx: node.x,
+          cy: node.y,
+          r: 14,
+          class: "active-decade-glow"
+        })
+      );
+    }
+
     if (index === currentIndex) {
-      const glowRadius = rosaryNodes[index].type === "large" ? 26 : 18;
+      const glowRadius = bead.type === "large" ? 26 : 18;
       beadLayer.appendChild(
         makeSvg("circle", {
           cx: node.x,
@@ -1410,9 +1437,36 @@ function drawHitTargets() {
       });
     }
 
-    attachPointerHandlers(target, index);
+    // The ten small beads of a decade are intentionally treated as one
+    // touch target. This avoids overlapping tiny hit areas on phones.
+    const targetIndex = getDecadeStartIndex(index);
+    attachPointerHandlers(target, targetIndex);
     hitLayer.appendChild(target);
   });
+}
+
+function getDecadeStartIndex(index) {
+  const bead = rosaryNodes[index];
+
+  if (!bead || bead.type !== "small" || bead.sectionKey !== "decade") {
+    return index;
+  }
+
+  let startIndex = index;
+  while (startIndex > 0) {
+    const previous = rosaryNodes[startIndex - 1];
+    if (
+      !previous ||
+      previous.type !== "small" ||
+      previous.sectionKey !== "decade" ||
+      previous.decadeNumber !== bead.decadeNumber
+    ) {
+      break;
+    }
+    startIndex -= 1;
+  }
+
+  return startIndex;
 }
 
 function attachPointerHandlers(el, index) {
@@ -1481,6 +1535,10 @@ function attachPointerHandlers(el, index) {
 
   el.addEventListener("pointerleave", cancel);
   el.addEventListener("pointercancel", cancel);
+
+  // Prevent the browser's native long-press menu / text-selection UI from
+  // competing with our own 420 ms long-press action on touch devices.
+  el.addEventListener("contextmenu", (e) => e.preventDefault());
 }
 
 function beadRadiusForIndex(index) {
