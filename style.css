@@ -175,18 +175,6 @@ input {
   font-size: 0.92rem;
 }
 
-
-/* Prevent accidental text selection/callouts while using the rosary on touch devices.
-   Scoped to the prayer app so the separate Impressum page stays normally selectable. */
-.app-shell,
-.app-shell *,
-.settings-panel,
-.settings-panel * {
-  -webkit-user-select: none !important;
-  user-select: none !important;
-  -webkit-touch-callout: none !important;
-}
-
 .rosary-stage {
   border-radius: 34px;
   padding: 10px;
@@ -371,108 +359,13 @@ input {
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  padding: 12px 0;
+  padding: 10px 0;
 }
 
-.toggle-row > span:first-child {
-  flex: 1;
-}
-
-.toggle-native {
-  display: none;
-}
-
-.hold-toggle-wrap {
-  flex-shrink: 0;
-}
-
-.hold-toggle {
-  --hold-progress: 0;
-  --hold-accent: #c7a97a;
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 108px;
-  justify-content: flex-end;
-  border: none;
-  background: transparent;
-  color: var(--text-main);
-  padding: 0;
-  cursor: default;
-}
-
-.hold-toggle__circle {
-  position: relative;
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(199, 169, 122, 0.26);
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.02),
-    0 8px 18px rgba(0, 0, 0, 0.28);
-  overflow: hidden;
-  cursor: pointer;
-}
-
-.hold-toggle__fill {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 35% 30%, rgba(255,255,255,0.28), rgba(255,255,255,0) 40%),
-    linear-gradient(180deg, rgba(214, 187, 145, 0.95), rgba(159, 114, 71, 0.95));
-  transform: scale(var(--hold-progress));
-  transform-origin: center;
-  opacity: calc(0.16 + (var(--hold-progress) * 0.84));
-  transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.38s ease;
-}
-
-.hold-toggle__core {
-  position: relative;
-  z-index: 1;
-  width: 13px;
-  height: 13px;
-  border-radius: 50%;
-  background: rgba(255, 248, 239, 0.92);
-  box-shadow: 0 0 12px rgba(255, 247, 230, 0.18);
-  transition: transform 0.22s ease, opacity 0.22s ease, background 0.22s ease;
-}
-
-.hold-toggle__value {
-  min-width: 34px;
-  text-align: right;
-  font-size: 0.94rem;
-  color: var(--text-soft);
-}
-
-.hold-toggle.is-on .hold-toggle__core {
-  transform: scale(0.72);
-  background: rgba(73, 44, 23, 0.7);
-}
-
-.hold-toggle.is-on .hold-toggle__value {
-  color: #f3e6d6;
-}
-
-.hold-toggle.is-holding .hold-toggle__circle {
-  box-shadow:
-    0 0 0 6px rgba(199, 169, 122, 0.08),
-    0 8px 22px rgba(0, 0, 0, 0.34);
-}
-
-.hold-toggle.is-holding .hold-toggle__fill {
-  transition: none;
-}
-
-.hold-toggle.is-complete .hold-toggle__circle {
-  box-shadow:
-    0 0 0 8px rgba(199, 169, 122, 0.1),
-    0 0 24px rgba(199, 169, 122, 0.2),
-    0 8px 22px rgba(0, 0, 0, 0.34);
+.toggle-row input {
+  width: 20px;
+  height: 20px;
+  accent-color: #9f7247;
 }
 
 .panel-prayer-text {
@@ -904,12 +797,4 @@ body.focus-mode .language-menu-card {
   font-weight: 600;
   letter-spacing: 0.02em;
   color: var(--gold-soft);
-}
-
-.hold-toggle__circle:active {
-  transform: scale(0.94);
-}
-
-.hold-toggle__circle {
-  transition: transform 0.12s ease, box-shadow 0.2s ease;
 }
