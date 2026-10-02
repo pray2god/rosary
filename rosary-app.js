@@ -315,7 +315,8 @@ const LITURGY = {
       hailMary: "Hail Mary",
       ourFather: "Our Father",
       gloryBe: "Glory Be",
-      fatimaPrayer: "Fatima Prayer"
+      fatimaPrayer: "Fatima Prayer",
+      salveRegina: "Salve Regina"
     },
     prayers: {
       signOfCross:
@@ -328,7 +329,9 @@ const LITURGY = {
       gloryBe:
         "Glory be to the Father, and to the Son, and to the Holy Spirit. As it was in the beginning, is now, and ever shall be, world without end. Amen.",
       fatima:
-        "O my Jesus, forgive us our sins, save us from the fires of hell, and lead all souls to heaven, especially those most in need of Thy mercy."
+        "O my Jesus, forgive us our sins, save us from the fires of hell, and lead all souls to heaven, especially those most in need of Thy mercy.",
+      salveRegina:
+        "Hail, holy Queen, Mother of mercy, our life, our sweetness and our hope. To thee do we cry, poor banished children of Eve. To thee do we send up our sighs, mourning and weeping in this valley of tears. Turn then, most gracious advocate, thine eyes of mercy toward us, and after this our exile, show unto us the blessed fruit of thy womb, Jesus. O clement, O loving, O sweet Virgin Mary. Pray for us, O holy Mother of God, that we may be made worthy of the promises of Christ. Amen."
     },
     meditations: {
       beginSlowly: "Begin slowly. Settle your attention.",
@@ -386,7 +389,8 @@ const LITURGY = {
       hailMary: "Gegrüßet seist du, Maria",
       ourFather: "Vaterunser",
       gloryBe: "Ehre sei dem Vater",
-      fatimaPrayer: "Fatima-Gebet"
+      fatimaPrayer: "Fatima-Gebet",
+      salveRegina: "Salve Regina"
     },
     prayers: {
       signOfCross:
@@ -399,7 +403,9 @@ const LITURGY = {
       gloryBe:
         "Ehre sei dem Vater und dem Sohn und dem Heiligen Geist, wie im Anfang, so auch jetzt und alle Zeit und in Ewigkeit. Amen.",
       fatima:
-        "O mein Jesus, verzeih uns unsere Sünden! Bewahre uns vor dem Feuer der Hölle! Führe alle Seelen in den Himmel, besonders jene, die deiner Barmherzigkeit am meisten bedürfen. Amen."
+        "O mein Jesus, verzeih uns unsere Sünden! Bewahre uns vor dem Feuer der Hölle! Führe alle Seelen in den Himmel, besonders jene, die deiner Barmherzigkeit am meisten bedürfen. Amen.",
+      salveRegina:
+        "Sei gegrüßt, o Königin, Mutter der Barmherzigkeit; unser Leben, unsere Wonne und unsere Hoffnung, sei gegrüßt! Zu dir rufen wir verbannte Kinder Evas; zu dir seufzen wir trauernd und weinend in diesem Tal der Tränen. Wohlan denn, unsere Fürsprecherin, wende deine barmherzigen Augen uns zu und nach diesem Elend zeige uns Jesus, die gebenedeite Frucht deines Leibes. O gütige, o milde, o süße Jungfrau Maria. Bitte für uns, o heilige Gottesmutter, auf dass wir würdig werden der Verheißungen Christi. Amen."
     },
     meditations: {
       beginSlowly: "",
@@ -457,7 +463,8 @@ const LITURGY = {
       hailMary: "Ave Maria",
       ourFather: "Pater Noster",
       gloryBe: "Gloria Patri",
-      fatimaPrayer: "Oratio Fatimae"
+      fatimaPrayer: "Oratio Fatimae",
+      salveRegina: "Salve Regina"
     },
     prayers: {
       signOfCross:
@@ -470,7 +477,9 @@ const LITURGY = {
       gloryBe:
         "Gloria Patri, et Filio, et Spiritui Sancto. Sicut erat in principio, et nunc, et semper, et in saecula saeculorum. Amen.",
       fatima:
-        "O mi Iesu, dimitte nobis debita nostra, libera nos ab igne inferni, conduc in caelum omnes animas, praesertim illas quae maxime indigent misericordia tua."
+        "O mi Iesu, dimitte nobis debita nostra, libera nos ab igne inferni, conduc in caelum omnes animas, praesertim illas quae maxime indigent misericordia tua.",
+      salveRegina:
+        "Salve, Regina, Mater misericordiae, vita, dulcedo et spes nostra, salve. Ad te clamamus, exsules filii Evae. Ad te suspiramus, gementes et flentes in hac lacrimarum valle. Eia ergo, advocata nostra, illos tuos misericordes oculos ad nos converte. Et Iesum, benedictum fructum ventris tui, nobis post hoc exsilium ostende. O clemens, o pia, o dulcis Virgo Maria. Ora pro nobis, sancta Dei Genetrix, ut digni efficiamur promissionibus Christi. Amen."
     },
     meditations: {
       beginSlowly: "",
@@ -528,7 +537,8 @@ const LITURGY = {
       hailMary: "Ave Maria",
       ourFather: "Padre Nostro",
       gloryBe: "Gloria al Padre",
-      fatimaPrayer: "Preghiera di Fatima"
+      fatimaPrayer: "Preghiera di Fatima",
+      salveRegina: "Salve Regina"
     },
     prayers: {
       signOfCross:
@@ -541,7 +551,9 @@ const LITURGY = {
       gloryBe:
         "Gloria al Padre e al Figlio e allo Spirito Santo. Come era nel principio, ora e sempre, nei secoli dei secoli. Amen.",
       fatima:
-        "Gesù mio, perdona le nostre colpe, preservaci dal fuoco dell'inferno, porta in cielo tutte le anime, specialmente le più bisognose della tua misericordia."
+        "Gesù mio, perdona le nostre colpe, preservaci dal fuoco dell'inferno, porta in cielo tutte le anime, specialmente le più bisognose della tua misericordia.",
+      salveRegina:
+        "Salve, Regina, madre di misericordia, vita, dolcezza e speranza nostra, salve. A te ricorriamo, esuli figli di Eva; a te sospiriamo, gementi e piangenti in questa valle di lacrime. Orsù dunque, avvocata nostra, rivolgi a noi gli occhi tuoi misericordiosi. E mostraci, dopo questo esilio, Gesù, il frutto benedetto del tuo seno. O clemente, o pia, o dolce Vergine Maria. Prega per noi, santa Madre di Dio, perché siamo resi degni delle promesse di Cristo. Amen."
     },
     meditations: {
       beginSlowly: "Inizia lentamente. Raccogli la tua attenzione.",
@@ -599,7 +611,8 @@ const LITURGY = {
       hailMary: "Dios te salve, María",
       ourFather: "Padre Nuestro",
       gloryBe: "Gloria",
-      fatimaPrayer: "Oración de Fátima"
+      fatimaPrayer: "Oración de Fátima",
+      salveRegina: "Salve Regina"
     },
     prayers: {
       signOfCross:
@@ -612,7 +625,9 @@ const LITURGY = {
       gloryBe:
         "Gloria al Padre, y al Hijo, y al Espíritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén.",
       fatima:
-        "Oh Jesús mío, perdona nuestros pecados, líbranos del fuego del infierno, lleva al cielo a todas las almas, especialmente a las más necesitadas de tu misericordia."
+        "Oh Jesús mío, perdona nuestros pecados, líbranos del fuego del infierno, lleva al cielo a todas las almas, especialmente a las más necesitadas de tu misericordia.",
+      salveRegina:
+        "Dios te salve, Reina y Madre de misericordia, vida, dulzura y esperanza nuestra; Dios te salve. A ti llamamos los desterrados hijos de Eva; a ti suspiramos, gimiendo y llorando en este valle de lágrimas. Ea, pues, Señora, abogada nuestra, vuelve a nosotros esos tus ojos misericordiosos; y después de este destierro muéstranos a Jesús, fruto bendito de tu vientre. ¡Oh clementísima, oh piadosa, oh dulce Virgen María! Ruega por nosotros, santa Madre de Dios, para que seamos dignos de alcanzar las promesas de nuestro Señor Jesucristo. Amén."
     },
     meditations: {
       beginSlowly: "Comienza despacio. Recoge tu atención.",
@@ -1273,8 +1288,8 @@ function getDisplayBead(index = currentIndex) {
 
       return {
         ...bead,
-        prayerTitle: `${lit.prayerTitles.gloryBe} • ${lit.prayerTitles.fatimaPrayer}`,
-        prayerText: `${lit.prayers.gloryBe}\n\n${lit.prayers.fatima}`,
+        prayerTitle: `${lit.prayerTitles.gloryBe} • ${lit.prayerTitles.fatimaPrayer} • ${lit.prayerTitles.salveRegina}`,
+        prayerText: `${lit.prayers.gloryBe}\n\n${lit.prayers.fatima}\n\n${lit.prayers.salveRegina}`,
         sectionKey: "decade",
         decadeNumber: 5,
         mysteryTitle: finalMystery.title,
