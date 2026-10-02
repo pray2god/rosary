@@ -398,7 +398,7 @@ input {
   background: transparent;
   color: var(--text-main);
   padding: 0;
-  cursor: pointer;
+  cursor: default;
 }
 
 .hold-toggle__circle {
@@ -415,6 +415,7 @@ input {
     inset 0 0 0 1px rgba(255, 255, 255, 0.02),
     0 8px 18px rgba(0, 0, 0, 0.28);
   overflow: hidden;
+  cursor: pointer;
 }
 
 .hold-toggle__fill {
@@ -427,7 +428,7 @@ input {
   transform: scale(var(--hold-progress));
   transform-origin: center;
   opacity: calc(0.16 + (var(--hold-progress) * 0.84));
-  transition: transform 0.18s ease, opacity 0.18s ease;
+  transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.38s ease;
 }
 
 .hold-toggle__core {
@@ -903,4 +904,12 @@ body.focus-mode .language-menu-card {
   font-weight: 600;
   letter-spacing: 0.02em;
   color: var(--gold-soft);
+}
+
+.hold-toggle__circle:active {
+  transform: scale(0.94);
+}
+
+.hold-toggle__circle {
+  transition: transform 0.12s ease, box-shadow 0.2s ease;
 }
