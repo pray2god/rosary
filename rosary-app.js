@@ -733,110 +733,55 @@ function syncAllHoldToggleButtons() {
 function setupHoldToggleButton(button) {
   if (!button || button.dataset.holdReady === "true") return;
 
-  const HOLD_DURATION = 1000;
   const toggleId = button.dataset.targetToggle;
   const input = document.getElementById(toggleId);
   if (!input) return;
 
-  let holdTimer = null;
-  let rafId = null;
-  let holdStart = 0;
-  let pointerDown = false;
-  let toggleTriggered = false;
-  let holdFrom = 0;
-  let holdTo = 1;
+  const circle = button.querySelector(".hold-toggle__circle");
+  if (!circle) return;
 
-  const renderProgress = () => {
-    if (!pointerDown) return;
-    const elapsed = Math.min((performance.now() - holdStart) / HOLD_DURATION, 1);
-    const visualProgress = holdFrom + ((holdTo - holdFrom) * elapsed);
-    button.style.setProperty("--hold-progress", String(visualProgress));
-    if (elapsed < 1) {
-      rafId = requestAnimationFrame(renderProgress);
-    }
-  };
-
-  const resetVisuals = (delay = 0) => {
+  const animateToState = (isOn) => {
+    button.classList.add("is-animating");
+    button.style.setProperty("--hold-progress", isOn ? "1" : "0");
     window.setTimeout(() => {
-      button.classList.remove("is-holding");
-      button.classList.remove("is-complete");
-      button.style.setProperty("--hold-progress", button.classList.contains("is-on") ? "1" : "0");
-    }, delay);
+      button.classList.remove("is-animating");
+    }, 420);
   };
 
-  const stopHold = () => {
-    pointerDown = false;
-    if (holdTimer) {
-      clearTimeout(holdTimer);
-      holdTimer = null;
-    }
-    if (rafId) {
-      cancelAnimationFrame(rafId);
-      rafId = null;
-    }
-    resetVisuals(toggleTriggered ? 180 : 0);
-    toggleTriggered = false;
-  };
-
-  const startHold = (event) => {
-    if (button.disabled) return;
-    if (event.pointerType === "mouse" && event.button !== 0) return;
-
+  const toggleSetting = (event) => {
     event.preventDefault();
     event.stopPropagation();
 
-    pointerDown = true;
-    toggleTriggered = false;
-    holdStart = performance.now();
-    holdFrom = input.checked ? 1 : 0;
-    holdTo = input.checked ? 0 : 1;
-    button.classList.add("is-holding");
-    button.classList.remove("is-complete");
-    button.style.setProperty("--hold-progress", String(holdFrom));
+    const nextValue = !input.checked;
+    input.checked = nextValue;
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+    syncHoldToggleButton(button);
+    animateToState(nextValue);
 
-    try {
-      if (typeof button.setPointerCapture === "function" && event.pointerId != null) {
-        button.setPointerCapture(event.pointerId);
-      }
-    } catch {}
-
-    rafId = requestAnimationFrame(renderProgress);
-
-    holdTimer = window.setTimeout(() => {
-      if (!pointerDown) return;
-      toggleTriggered = true;
-      button.classList.add("is-complete");
-      input.checked = !input.checked;
-      input.dispatchEvent(new Event("change", { bubbles: true }));
-      syncHoldToggleButton(button);
-      if (settings.vibration && navigator.vibrate) {
-        navigator.vibrate(24);
-      }
-    }, HOLD_DURATION);
+    if (settings.vibration && navigator.vibrate) {
+      navigator.vibrate(18);
+    }
   };
 
-  button.addEventListener("pointerdown", startHold);
-  button.addEventListener("pointerup", (event) => {
-    event.preventDefault();
-    stopHold();
-  });
-  button.addEventListener("pointerleave", stopHold);
-  button.addEventListener("pointercancel", stopHold);
-  button.addEventListener("contextmenu", (event) => event.preventDefault());
+  circle.addEventListener("click", toggleSetting);
+  circle.addEventListener("contextmenu", (event) => event.preventDefault());
+
   button.addEventListener("click", (event) => {
-    event.preventDefault();
-    event.stopPropagation();
+    if (event.target !== circle && !circle.contains(event.target)) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
   });
+
   button.addEventListener("keydown", (event) => {
     if (event.key !== "Enter" && event.key !== " ") return;
     event.preventDefault();
-    input.checked = !input.checked;
-    input.dispatchEvent(new Event("change", { bubbles: true }));
-    syncHoldToggleButton(button);
+    toggleSetting(event);
   });
 
   button.dataset.holdReady = "true";
   syncHoldToggleButton(button);
+  button.style.setProperty("--hold-progress", input.checked ? "1" : "0");
 }
 
 holdToggleButtons.forEach(setupHoldToggleButton);
