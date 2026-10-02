@@ -656,11 +656,25 @@ const LITURGY = {
 };
 
 let cancelActiveLongPress = null;
+let suppressNextSyntheticClick = false;
 let currentUILang = loadUiLanguage();
 let currentPrayerLang = loadPrayerLanguage();
 let currentMysteryChoice = loadMysteryChoice();
 let settings = loadSettings();
 let previousIndex = null;
+
+// A long press can produce a compatibility click on some mobile browsers.
+// Consume only that synthetic click; a fresh tap after finger-up works normally.
+document.addEventListener(
+  "click",
+  (e) => {
+    if (!suppressNextSyntheticClick) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    suppressNextSyntheticClick = false;
+  },
+  true
+);
 
 settings.focusMode = false;
 saveSettings();
@@ -1335,26 +1349,9 @@ function drawBeads() {
     }
 
     const bead = rosaryNodes[index];
-    const isInActiveDecade =
-      activeDecadeNumber !== null &&
-      bead.type === "small" &&
-      bead.sectionKey === "decade" &&
-      bead.decadeNumber === activeDecadeNumber;
 
-    // On mobile the ten Ave-Maria beads act as one easy-to-hit decade group.
-    // Keep a soft glow on the whole decade, while the exact current bead
-    // still gets the stronger normal active glow.
-    if (isInActiveDecade && index !== currentIndex) {
-      beadLayer.appendChild(
-        makeSvg("circle", {
-          cx: node.x,
-          cy: node.y,
-          r: 14,
-          class: "active-decade-glow"
-        })
-      );
-    }
-
+    // Only the exact current bead glows. The rest of a decade stays visually
+    // untouched so the small beads never look selected/black on mobile.
     if (index === currentIndex) {
       const glowRadius = bead.type === "large" ? 26 : 18;
       beadLayer.appendChild(
@@ -1437,10 +1434,9 @@ function drawHitTargets() {
       });
     }
 
-    // The ten small beads of a decade are intentionally treated as one
-    // touch target. This avoids overlapping tiny hit areas on phones.
-    const targetIndex = getDecadeStartIndex(index);
-    attachPointerHandlers(target, targetIndex);
+    // Each visible bead keeps its own pointer target. The tap handler decides
+    // whether a first tap enters the decade at bead 1 or selects the exact bead.
+    attachPointerHandlers(target, index);
     hitLayer.appendChild(target);
   });
 }
@@ -1467,6 +1463,38 @@ function getDecadeStartIndex(index) {
   }
 
   return startIndex;
+}
+
+function isSameDecade(indexA, indexB) {
+  const a = rosaryNodes[indexA];
+  const b = rosaryNodes[indexB];
+
+  return Boolean(
+    a &&
+      b &&
+      a.type === "small" &&
+      b.type === "small" &&
+      a.sectionKey === "decade" &&
+      b.sectionKey === "decade" &&
+      a.decadeNumber === b.decadeNumber
+  );
+}
+
+function resolveTapIndex(index) {
+  const bead = rosaryNodes[index];
+
+  if (!bead || bead.type !== "small" || bead.sectionKey !== "decade") {
+    return index;
+  }
+
+  // First tap on a decade enters it at its first Ave Maria. Once the current
+  // progress is already inside that same decade, tapping a bead selects the
+  // exact bead that was touched.
+  if (isSameDecade(currentIndex, index)) {
+    return index;
+  }
+
+  return getDecadeStartIndex(index);
 }
 
 function attachPointerHandlers(el, index) {
@@ -1496,10 +1524,12 @@ function attachPointerHandlers(el, index) {
     cancelActiveLongPress = cancel;
 
     timer = setTimeout(() => {
+      // A long press is a pure "peek" action: show the text for the bead that
+      // is under the finger, but DO NOT move progress or toggle any state.
+      // The entire current pointer sequence is consumed until the finger lifts.
       longPressed = true;
-      moveTo(index, false);
-      openPanel();
       timer = null;
+      openPanel(index);
     }, 420);
   };
 
@@ -1526,8 +1556,17 @@ function attachPointerHandlers(el, index) {
   el.addEventListener("pointerup", (e) => {
     if (trackingPointerId !== e.pointerId) return;
 
-    if (!longPressed && timer) {
-      moveTo(index);
+    if (longPressed) {
+      // Important on mobile: releasing the finger after the long press must
+      // not become a second tap/click on the bead or the newly opened panel.
+      e.preventDefault();
+      e.stopPropagation();
+      suppressNextSyntheticClick = true;
+      setTimeout(() => {
+        suppressNextSyntheticClick = false;
+      }, 0);
+    } else if (timer) {
+      moveTo(resolveTapIndex(index));
     }
 
     cancel();
@@ -1607,10 +1646,10 @@ function vibrateForBead(bead) {
   navigator.vibrate(40);
 }
 
-function openPanel() {
+function openPanel(index = currentIndex) {
   settingsPanel.classList.remove("hidden");
   settingsPanel.setAttribute("aria-hidden", "false");
-  updatePanelForCurrentBead();
+  updatePanelForCurrentBead(index);
 }
 
 function closePanel() {
