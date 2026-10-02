@@ -40,7 +40,6 @@ const settingsBackdrop = document.getElementById("settingsBackdrop");
 const focusModeToggle = document.getElementById("focusModeToggle");
 const showTextToggle = document.getElementById("showTextToggle");
 const vibrationToggle = document.getElementById("vibrationToggle");
-const holdToggleButtons = Array.from(document.querySelectorAll(".hold-toggle"));
 
 const focusModeLabelEl = document.getElementById("focusModeLabel");
 const showTextLabelEl = document.getElementById("showTextLabel");
@@ -202,9 +201,7 @@ const UI_TEXT = {
     joyfulMysteries: "Joyful Mysteries",
     sorrowfulMysteries: "Sorrowful Mysteries",
     gloriousMysteries: "Glorious Mysteries",
-    luminousMysteries: "Luminous Mysteries",
-    yes: "Yes",
-    no: "No"
+    luminousMysteries: "Luminous Mysteries"
   },
   de: {
     appTitle: "Rosenkranz",
@@ -235,9 +232,7 @@ const UI_TEXT = {
     joyfulMysteries: "Freudenreicher Rosenkranz",
     sorrowfulMysteries: "Schmerzhafter Rosenkranz",
     gloriousMysteries: "Glorreicher Rosenkranz",
-    luminousMysteries: "Lichtreicher Rosenkranz",
-    yes: "Ja",
-    no: "Nein"
+    luminousMysteries: "Lichtreicher Rosenkranz"
   },
   it: {
     appTitle: "Rosario",
@@ -268,9 +263,7 @@ const UI_TEXT = {
     joyfulMysteries: "Misteri Gaudiosi",
     sorrowfulMysteries: "Misteri Dolorosi",
     gloriousMysteries: "Misteri Gloriosi",
-    luminousMysteries: "Misteri Luminosi",
-    yes: "Sì",
-    no: "No"
+    luminousMysteries: "Misteri Luminosi"
   },
   es: {
     appTitle: "Rosario",
@@ -301,9 +294,7 @@ const UI_TEXT = {
     joyfulMysteries: "Misterios Gozosos",
     sorrowfulMysteries: "Misterios Dolorosos",
     gloriousMysteries: "Misterios Gloriosos",
-    luminousMysteries: "Misterios Luminosos",
-    yes: "Sí",
-    no: "No"
+    luminousMysteries: "Misterios Luminosos"
   }
 };
 
@@ -666,125 +657,24 @@ const LITURGY = {
 
 let cancelActiveLongPress = null;
 let suppressNextSyntheticClick = false;
-let beadInteractionLockedUntil = 0;
 let currentUILang = loadUiLanguage();
 let currentPrayerLang = loadPrayerLanguage();
 let currentMysteryChoice = loadMysteryChoice();
 let settings = loadSettings();
 let previousIndex = null;
 
-// Mobile browsers can dispatch delayed pointer/click events after our long-press
-// panel has already opened. For one second after opening it from a bead, consume
-// the whole tail of that touch gesture. This prevents progress/checkmarks from
-// changing underneath the finger.
-function lockBeadInteractions(ms = 1000) {
-  beadInteractionLockedUntil = Math.max(beadInteractionLockedUntil, Date.now() + ms);
-}
-
-function beadInteractionsLocked() {
-  return Date.now() < beadInteractionLockedUntil;
-}
-
-["pointerdown", "pointerup", "click"].forEach((eventName) => {
-  document.addEventListener(
-    eventName,
-    (e) => {
-      if (!beadInteractionsLocked()) {
-        if (eventName === "click" && suppressNextSyntheticClick) {
-          e.preventDefault();
-          e.stopImmediatePropagation();
-          suppressNextSyntheticClick = false;
-        }
-        return;
-      }
-
-      e.preventDefault();
-      e.stopImmediatePropagation();
-    },
-    true
-  );
-});
-
-function syncHoldToggleButton(button) {
-  if (!button) return;
-  const toggleId = button.dataset.targetToggle;
-  const valueId = button.dataset.targetValue;
-  const input = document.getElementById(toggleId);
-  const valueEl = document.getElementById(valueId);
-  if (!input) return;
-
-  const isOn = !!input.checked;
-  button.classList.toggle("is-on", isOn);
-  button.setAttribute("aria-pressed", isOn ? "true" : "false");
-  if (!button.classList.contains("is-holding")) {
-    button.style.setProperty("--hold-progress", isOn ? "1" : "0");
-  }
-
-  if (valueEl) {
-    const t = ui();
-    valueEl.textContent = isOn ? t.yes : t.no;
-  }
-}
-
-function syncAllHoldToggleButtons() {
-  holdToggleButtons.forEach(syncHoldToggleButton);
-}
-
-function setupHoldToggleButton(button) {
-  if (!button || button.dataset.holdReady === "true") return;
-
-  const toggleId = button.dataset.targetToggle;
-  const input = document.getElementById(toggleId);
-  if (!input) return;
-
-  const circle = button.querySelector(".hold-toggle__circle");
-  if (!circle) return;
-
-  const animateToState = (isOn) => {
-    button.classList.add("is-animating");
-    button.style.setProperty("--hold-progress", isOn ? "1" : "0");
-    window.setTimeout(() => {
-      button.classList.remove("is-animating");
-    }, 420);
-  };
-
-  const toggleSetting = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-
-    const nextValue = !input.checked;
-    input.checked = nextValue;
-    input.dispatchEvent(new Event("change", { bubbles: true }));
-    syncHoldToggleButton(button);
-    animateToState(nextValue);
-
-    if (settings.vibration && navigator.vibrate) {
-      navigator.vibrate(18);
-    }
-  };
-
-  circle.addEventListener("click", toggleSetting);
-  circle.addEventListener("contextmenu", (event) => event.preventDefault());
-
-  button.addEventListener("click", (event) => {
-    if (event.target !== circle && !circle.contains(event.target)) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-  });
-
-  button.addEventListener("keydown", (event) => {
-    if (event.key !== "Enter" && event.key !== " ") return;
-    event.preventDefault();
-    toggleSetting(event);
-  });
-
-  button.dataset.holdReady = "true";
-  syncHoldToggleButton(button);
-  button.style.setProperty("--hold-progress", input.checked ? "1" : "0");
-}
-
-holdToggleButtons.forEach(setupHoldToggleButton);
+// A long press can produce a compatibility click on some mobile browsers.
+// Consume only that synthetic click; a fresh tap after finger-up works normally.
+document.addEventListener(
+  "click",
+  (e) => {
+    if (!suppressNextSyntheticClick) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    suppressNextSyntheticClick = false;
+  },
+  true
+);
 
 settings.focusMode = false;
 saveSettings();
@@ -979,7 +869,6 @@ function applyUIText() {
   updateLanguageControls();
   updateMysteryPickerButtons();
   renderMysteryName();
-  syncAllHoldToggleButtons();
   updatePanelForCurrentBead();
 }
 
@@ -1640,7 +1529,6 @@ function attachPointerHandlers(el, index) {
       // The entire current pointer sequence is consumed until the finger lifts.
       longPressed = true;
       timer = null;
-      lockBeadInteractions(1000);
       openPanel(index);
     }, 420);
   };
@@ -1774,7 +1662,6 @@ function applySettings() {
   focusModeToggle.checked = settings.focusMode;
   showTextToggle.checked = settings.showText;
   vibrationToggle.checked = settings.vibration;
-  syncAllHoldToggleButtons();
   updatePanelForCurrentBead();
 }
 
