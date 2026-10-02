@@ -1184,23 +1184,24 @@ function buildRosaryData() {
         sectionKey: "decade",
         decadeNumber: decade,
         prayerTitle: lit.prayerTitles.hailMary,
-        prayerText: buildInsertedHailMary(lit.prayers.hailMary, mystery.insert),
+        prayerText: lit.prayers.hailMary,
         mysteryTitle: mystery.title,
-        mysteryInsert: mystery.insert,
+        mysteryInsert: "",
         mysteryText: lit.meditations.hailMaryOf10(mystery.title, i)
       });
     }
 
     if (decade < 5) {
+      const nextMystery = mysterySet[decade];
       beads.push({
         type: "large",
         sectionKey: "decade",
-        decadeNumber: decade,
+        decadeNumber: decade + 1,
         prayerTitle: lit.prayerTitles.ourFather,
         prayerText: lit.prayers.ourFather,
-        mysteryTitle: mystery.title,
-        mysteryInsert: mystery.insert,
-        mysteryText: lit.meditations.mysteryNumber(decade, mystery.title)
+        mysteryTitle: nextMystery.title,
+        mysteryInsert: nextMystery.insert,
+        mysteryText: lit.meditations.mysteryNumber(decade + 1, nextMystery.insert)
       });
     }
   }
@@ -1284,24 +1285,29 @@ function getDisplayBead(index = currentIndex) {
 
   if (index === 5) {
     if (previousIndex === 59) {
-      const finalMystery = getMysterySetForToday()[4];
-
       return {
         ...bead,
         prayerTitle: `${lit.prayerTitles.gloryBe} • ${lit.prayerTitles.fatimaPrayer} • ${lit.prayerTitles.salveRegina}`,
         prayerText: `${lit.prayers.gloryBe}\n\n${lit.prayers.fatima}\n\n${lit.prayers.salveRegina}`,
-        sectionKey: "decade",
-        decadeNumber: 5,
-        mysteryTitle: finalMystery.title,
-        mysteryInsert: finalMystery.insert,
-        mysteryText: lit.meditations.mysteryNumber(5, finalMystery.title)
+        sectionKey: "closing",
+        decadeNumber: null,
+        mysteryTitle: "",
+        mysteryInsert: "",
+        mysteryText: ""
       };
     }
+
+    const firstMystery = getMysterySetForToday()[0];
 
     return {
       ...bead,
       prayerTitle: `${lit.prayerTitles.gloryBe} • ${lit.prayerTitles.ourFather}`,
-      prayerText: `${lit.prayers.gloryBe}\n\n${lit.prayers.ourFather}`
+      prayerText: `${lit.prayers.gloryBe}\n\n${lit.prayers.ourFather}`,
+      sectionKey: "decade",
+      decadeNumber: 1,
+      mysteryTitle: firstMystery.title,
+      mysteryInsert: firstMystery.insert,
+      mysteryText: lit.meditations.mysteryNumber(1, firstMystery.insert)
     };
   }
 
@@ -1335,15 +1341,7 @@ function updatePanelForCurrentBead(index = currentIndex) {
 
   panelPrayerTitle.textContent = bead.prayerTitle;
 
-  let details = bead.mysteryText || "";
-
-  if (bead.mysteryTitle && bead.mysteryInsert) {
-    details += `${details ? "\n\n" : ""}${t.mysteryOfThisBead}:
-${bead.mysteryTitle}
-
-${t.addAfterJesus}:
-${bead.mysteryInsert}`;
-  }
+  const details = bead.mysteryText || "";
 
   panelPrayerText.textContent = settings.showText
     ? `${bead.prayerText}${details ? `\n\n${details}` : ""}`
