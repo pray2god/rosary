@@ -20,6 +20,7 @@ const mysteryNameEl = document.getElementById("mysteryName");
 const prayerTitleEl = document.getElementById("prayerTitle");
 const sectionLabelEl = document.getElementById("sectionLabel");
 const progressLabelEl = document.getElementById("progressLabel");
+const mysteryMeditationLinkEl = document.getElementById("mysteryMeditationLink");
 
 const panelPrevBtn = document.getElementById("panelPrevBtn");
 const panelNextBtn = document.getElementById("panelNextBtn");
@@ -1329,6 +1330,20 @@ function renderCurrent() {
   prayerTitleEl.textContent = bead.prayerTitle;
   sectionLabelEl.textContent = getSectionLabel(bead);
   progressLabelEl.textContent = ui().stepOf(currentIndex + 1, rosaryNodes.length);
+
+  if (bead.mysteryTitle && bead.decadeNumber) {
+    const lit = liturgy();
+    const mystery = getMysterySetForToday()[bead.decadeNumber - 1];
+    const linkText = lit.meditations.mysteryNumber(bead.decadeNumber, mystery?.insert || bead.mysteryTitle);
+    mysteryMeditationLinkEl.textContent = `${linkText}  →`;
+    mysteryMeditationLinkEl.href = `mysteries-${getActiveMysteryKey()}.html#m${bead.decadeNumber}`;
+    mysteryMeditationLinkEl.classList.remove("hidden");
+  } else {
+    mysteryMeditationLinkEl.classList.add("hidden");
+    mysteryMeditationLinkEl.removeAttribute("href");
+    mysteryMeditationLinkEl.textContent = "";
+  }
+
   renderMysteryName();
   updatePanelForCurrentBead();
 }

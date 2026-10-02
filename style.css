@@ -175,6 +175,22 @@ input {
   font-size: 0.92rem;
 }
 
+.mystery-meditation-link {
+  display: inline-block;
+  margin: 8px 0 9px;
+  max-width: 100%;
+  color: var(--gold-soft);
+  text-decoration: none;
+  font-size: 0.92rem;
+  line-height: 1.4;
+  border-bottom: 1px solid rgba(199, 169, 122, 0.25);
+  padding-bottom: 2px;
+}
+
+.mystery-meditation-link:active {
+  opacity: 0.72;
+}
+
 
 /* Prevent accidental text selection/callouts while using the rosary on touch devices.
    Scoped to the prayer app so the separate Impressum page stays normally selectable. */
